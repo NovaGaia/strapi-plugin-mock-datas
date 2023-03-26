@@ -11,9 +11,21 @@ const getModelPopulationAttributes = (model) => {
   return model.attributes;
 };
 
-const getFullSchema = (modelUid, maxDepth = 20, informations = {}) => {
+const getMiniSchema = (modelUid, maxDepth = 20) => {
   if (maxDepth <= 1) {
-    return true;
+    return null;
+  }
+  const schema = {};
+  const model = strapi.getModel(modelUid);
+  for (const [key, value] of Object.entries(model.attributes)) {
+    schema[key] = value.type === `component` ? getMiniSchema(value.component) : value.type;
+  }
+  return schema;
+};
+
+const getFullSchema = (modelUid, maxDepth = 20) => {
+  if (maxDepth <= 1) {
+    return null;
   }
   const customFields = strapi.plugin('strapi-plugin-mock-datas')?.config('customFields');
   const consoleLog = strapi.plugin('strapi-plugin-mock-datas')?.config('consoleLog');
@@ -50,19 +62,21 @@ const getFullSchema = (modelUid, maxDepth = 20, informations = {}) => {
               value.target,
               key === 'localizations' && maxDepth > 2 ? 1 : maxDepth - 1
             );
-            // console.log(`relationPopulate >`, key, relationPopulate);
             schema[key] = isEmpty(relationPopulate) ? null : relationPopulate;
             break;
           case 'dynamiczone':
             const dz = [];
-            let count = 0;
+            let count = 1;
             value.components.forEach((item) => {
-              const obj = getFullSchema(item, maxDepth - 1);
-              obj[`__component`] = item;
-              obj[`id`] = count;
-              dz.push(obj);
-              count++;
+              const obj = getMiniSchema(item);
+              if (obj) {
+                obj[`__component`] = item;
+                obj[`id`] = count;
+                dz.push(obj);
+                count++;
+              }
             });
+            consoleLog && console.log(`output of DZ`, dz);
             schema[key] = isEmpty(dz) ? null : dz;
             break;
 
@@ -75,7 +89,10 @@ const getFullSchema = (modelUid, maxDepth = 20, informations = {}) => {
   }
   return isEmpty(schema) ? null : schema;
 };
-const getMockedObject = (schema, doing = null) => {
+const getMockedObject = (schema, doing = null, maxDepth = 20) => {
+  if (maxDepth <= 1) {
+    return null;
+  }
   if (!schema) return null;
   const consoleLog = strapi.plugin('strapi-plugin-mock-datas')?.config('consoleLog');
   if (doing === null) {
@@ -84,23 +101,20 @@ const getMockedObject = (schema, doing = null) => {
     consoleLog && console.log(`Do > ${doing}`);
   }
   const results = {};
-  // console.log(`results`, results);
   for (const [key, value] of Object.entries(schema)) {
     if (value) {
-      // console.log(`typeof ${key}: ${typeof value}`);
-      if (typeof value === 'object') console.log(`isArray ${key}: ${Array.isArray(value)}`);
+      consoleLog && console.log(`typeof ${key}: ${typeof value}`);
       if (typeof value === 'object') {
+        consoleLog && console.log(`isArray ${key}: ${Array.isArray(value)}`);
         if (Array.isArray(value)) {
-          const tmpArray = [];
-          value.forEach((item) => {
-            tmpArray.push(getMockedObject(item, key));
+          results[key] = value.map((item) => {
+            return getMockedObject(item, key, maxDepth - 1);
           });
-          results[key] = tmpArray;
         } else {
-          results[key] = getMockedObject(value, key);
+          results[key] = getMockedObject(value, key, maxDepth - 1);
         }
+        doing === null && consoleLog ? console.log(results[key]) : null;
       } else {
-        // console.log(`${key}: ${value}`);
         switch (value) {
           case `__component`:
             results[key] = value;

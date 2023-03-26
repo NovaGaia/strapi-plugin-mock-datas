@@ -18,20 +18,14 @@ module.exports = ({ strapi }) => {
         const schema = getFullSchema(event.model.uid, defaultDepth);
         if (schema !== undefined && consoleLog)
           console.log(`returned schema: ${JSON.stringify(schema)}`);
-        const mockedObject = getMockedObject(schema);
-        console.log(`returned mockedObject: ${JSON.stringify(mockedObject)}`);
+        const mockedObject = getMockedObject(schema, null, defaultDepth);
+        if (mockedObject !== undefined && consoleLog)
+          console.log(`returned mockedObject: ${JSON.stringify(mockedObject)}`);
         if (event.result) {
           event.result.length = 1;
-          // console.log(typeof event.result);
-          // event.result[0] = mockedObject;
-          console.log(`event.result`, JSON.stringify(event.result));
-          // console.log(`event`, event);
+          event.result[0] = mockedObject;
         }
       }
-
-      // don't do event.model.uid === 'admin::api-token'
-      // event.attributes => contient le schema de l'objet
-      // event.result => [] d'objet
     }
   });
 };
