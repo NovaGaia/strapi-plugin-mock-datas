@@ -87,11 +87,18 @@ const getMockedObject = (schema, doing = null) => {
   // console.log(`results`, results);
   for (const [key, value] of Object.entries(schema)) {
     if (value) {
-      // console.log(`typeof value: ${typeof value}`);
-      if (typeof value === 'boolean') {
-        consoleLog && console.log(`Won't do > ${key}`);
-      } else if (typeof value === 'object') {
-        results[key] = getMockedObject(value, key);
+      // console.log(`typeof ${key}: ${typeof value}`);
+      if (typeof value === 'object') console.log(`isArray ${key}: ${Array.isArray(value)}`);
+      if (typeof value === 'object') {
+        if (Array.isArray(value)) {
+          const tmpArray = [];
+          value.forEach((item) => {
+            tmpArray.push(getMockedObject(item, key));
+          });
+          results[key] = tmpArray;
+        } else {
+          results[key] = getMockedObject(value, key);
+        }
       } else {
         // console.log(`${key}: ${value}`);
         switch (value) {
@@ -158,11 +165,11 @@ const getMockedObject = (schema, doing = null) => {
             break;
 
           default:
-            if (key !== `__component`) {
+            if (key === `__component` || key === `id`) {
+              results[key] = value;
+            } else {
               console.warn(`In ${key} > ${value} must be mocked!`);
               results[key] = `todo: ${value}`;
-            } else {
-              results[key] = value;
             }
             break;
         }
