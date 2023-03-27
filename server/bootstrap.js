@@ -15,15 +15,19 @@ module.exports = ({ strapi }) => {
       ) {
         // don't change result...
       } else {
+        console.log(JSON.stringify(strapi.getModel(event.model.uid).__schema__.attributes));
         const schema = getFullSchema(event.model.uid, defaultDepth);
         if (schema !== undefined && consoleLog)
           console.log(`returned schema: ${JSON.stringify(schema)}`);
         const mockedObject = getMockedObject(schema, null, defaultDepth);
         if (mockedObject !== undefined && consoleLog)
           console.log(`returned mockedObject: ${JSON.stringify(mockedObject)}`);
-        if (event.result) {
+        // TODO: afterFindOne (single Type), ce ne doit pas être tableau, normalement...
+        if (event.result && event.action === 'afterFindMany') {
+          // Send only one result.
           event.result.length = 1;
           event.result[0] = mockedObject;
+          // event.result.push(mockedObject);
         }
       }
     }

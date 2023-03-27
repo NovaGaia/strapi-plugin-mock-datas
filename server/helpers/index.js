@@ -1,4 +1,4 @@
-const { isEmpty, merge } = require('lodash/fp');
+const { isEmpty } = require('lodash/fp');
 const { faker } = require('@faker-js/faker');
 const { fakeMarkdown, fakeImage } = require('./fakeDatas');
 
@@ -11,6 +11,12 @@ const getModelPopulationAttributes = (model) => {
   return model.attributes;
 };
 
+/**
+ * Methode dedicate to generate part of the schema for dynamiczone
+ * @param {String} modelUid Model name
+ * @param {Int} maxDepth Deep of the schema
+ * @returns {}
+ */
 const getMiniSchema = (modelUid, maxDepth = 20) => {
   if (maxDepth <= 1) {
     return null;
@@ -18,11 +24,19 @@ const getMiniSchema = (modelUid, maxDepth = 20) => {
   const schema = {};
   const model = strapi.getModel(modelUid);
   for (const [key, value] of Object.entries(model.attributes)) {
-    schema[key] = value.type === `component` ? getMiniSchema(value.component) : value.type;
+    // TODO: tester avec une relation...
+    schema[key] =
+      value.type === `component` ? getMiniSchema(value.component, maxDepth - 1) : value.type;
   }
   return schema;
 };
 
+/**
+ * Methode to generate schema
+ * @param {String} modelUid Model name
+ * @param {Int} maxDepth Deep of the schema
+ * @returns {}
+ */
 const getFullSchema = (modelUid, maxDepth = 20) => {
   if (maxDepth <= 1) {
     return null;
@@ -68,7 +82,7 @@ const getFullSchema = (modelUid, maxDepth = 20) => {
             const dz = [];
             let count = 1;
             value.components.forEach((item) => {
-              const obj = getMiniSchema(item);
+              const obj = getMiniSchema(item, maxDepth - 1);
               if (obj) {
                 obj[`__component`] = item;
                 obj[`id`] = count;
@@ -89,6 +103,14 @@ const getFullSchema = (modelUid, maxDepth = 20) => {
   }
   return isEmpty(schema) ? null : schema;
 };
+
+/**
+ * Methode to generate fake data
+ * @param {Object} schema The full schema
+ * @param {*} doing This method is recursive, so to know if it is recursive or not
+ * @param {*} maxDepth Deep of the fake data
+ * @returns {}
+ */
 const getMockedObject = (schema, doing = null, maxDepth = 20) => {
   if (maxDepth <= 1) {
     return null;
@@ -107,9 +129,11 @@ const getMockedObject = (schema, doing = null, maxDepth = 20) => {
       if (typeof value === 'object') {
         consoleLog && console.log(`isArray ${key}: ${Array.isArray(value)}`);
         if (Array.isArray(value)) {
-          results[key] = value.map((item) => {
+          const tmpArr = value.map((item) => {
+            console.log(item, key, maxDepth);
             return getMockedObject(item, key, maxDepth - 1);
           });
+          results[key] = tmpArr;
         } else {
           results[key] = getMockedObject(value, key, maxDepth - 1);
         }
