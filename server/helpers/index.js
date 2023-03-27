@@ -23,8 +23,7 @@ const getMiniSchema = (modelUid, maxDepth = 20) => {
   }
   const schema = {};
   const model = strapi.getModel(modelUid);
-  for (const [key, value] of Object.entries(model.attributes)) {
-    // TODO: tester avec une relation...
+  for (const [key, value] of Object.entries(getModelPopulationAttributes(model))) {
     switch (value.type) {
       case `component`:
         schema[key] = getMiniSchema(value.component, maxDepth - 1);
@@ -39,8 +38,6 @@ const getMiniSchema = (modelUid, maxDepth = 20) => {
         schema[key] = value.type;
         break;
     }
-    // schema[key] =
-    //   value.type === `component` ? getMiniSchema(value.component, maxDepth - 1) : value.type;
   }
   return schema;
 };

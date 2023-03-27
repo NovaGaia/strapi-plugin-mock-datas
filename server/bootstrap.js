@@ -6,14 +6,12 @@ module.exports = ({ strapi }) => {
   const consoleLog = strapi.plugin('strapi-plugin-mock-datas')?.config('consoleLog');
   // Subscribe to the lifecycles that we are intrested in.
   strapi.db.lifecycles.subscribe((event) => {
-    if (process.env.NODE_ENV === 'production') {
-      return event;
-    } else {
-      console.warn(
-        `*************** FAKE DATA SENT TO API = DESABLED PLUGIN BEFORE COMMIT *********************`
-      );
-    }
     if (event.action === 'afterFindMany' || event.action === 'afterFindOne') {
+      if (process.env.NODE_ENV === 'production') {
+        return event;
+      } else {
+        console.warn(`*************** FAKE DATA SENT BY API *********************`);
+      }
       if (
         event.model.uid.startsWith(`admin::`) ||
         event.model.uid.startsWith(`strapi::`) ||
