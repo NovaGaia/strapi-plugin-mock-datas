@@ -25,8 +25,22 @@ const getMiniSchema = (modelUid, maxDepth = 20) => {
   const model = strapi.getModel(modelUid);
   for (const [key, value] of Object.entries(model.attributes)) {
     // TODO: tester avec une relation...
-    schema[key] =
-      value.type === `component` ? getMiniSchema(value.component, maxDepth - 1) : value.type;
+    switch (value.type) {
+      case `component`:
+        schema[key] = getMiniSchema(value.component, maxDepth - 1);
+        break;
+      case `relation`:
+        schema[key] = getFullSchema(
+          value.target,
+          key === 'localizations' && maxDepth > 2 ? 1 : maxDepth - 1
+        );
+        break;
+      default:
+        schema[key] = value.type;
+        break;
+    }
+    // schema[key] =
+    //   value.type === `component` ? getMiniSchema(value.component, maxDepth - 1) : value.type;
   }
   return schema;
 };

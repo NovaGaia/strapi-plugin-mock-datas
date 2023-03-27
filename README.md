@@ -18,7 +18,7 @@ Ajouter à ./config/plugins.js :
     enabled: true,
     resolve: './src/plugins/strapi-plugin-mock-datas',
     config: {
-        defaultDepth: 3, // default 5
+        defaultDepth: 5, // default 5
         consoleLog: false, // default false
         customFields: { 'plugin::permalinks.permalink': `string` }, // default {}
     },
@@ -147,18 +147,14 @@ Pour debug Strapi
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Strapi v4 Debug",
-      "type": "node",
+      "command": "npm run develop",
+      "name": "Run npm develop",
       "request": "launch",
-      "cwd": "${workspaceFolder}",
-      "runtimeExecutable": "node",
-      "runtimeArgs": ["--inspect"],
-      "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}/node_modules/@strapi/strapi/bin/strapi.js",
-      "args": ["develop"],
-
-      "autoAttachChildProcesses": true,
-      "console": "integratedTerminal"
+      "type": "node-terminal",
+      "env": {
+        "DATABASE_SSL": "false",
+        "NODE_ENV": "development"
+      }
     }
   ]
 }
