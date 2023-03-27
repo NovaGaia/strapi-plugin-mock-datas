@@ -80,7 +80,9 @@ const getFullSchema = (modelUid, maxDepth = 20) => {
         consoleLog && console.log(`In ${modelUid} > ${key} is ${value.type}`);
         switch (value.type) {
           case 'component':
-            schema[key] = getFullSchema(value.component, maxDepth - 1);
+            schema[key] = value.repeatable
+              ? [getFullSchema(value.component, maxDepth - 1)]
+              : getFullSchema(value.component, maxDepth - 1);
             break;
           case 'media':
             schema[key] = `media`;
@@ -144,7 +146,6 @@ const getMockedObject = (schema, doing = null, maxDepth = 20) => {
         consoleLog && console.log(`isArray ${key}: ${Array.isArray(value)}`);
         if (Array.isArray(value)) {
           const tmpArr = value.map((item) => {
-            console.log(item, key, maxDepth);
             return getMockedObject(item, key, maxDepth - 1);
           });
           results[key] = tmpArr;
@@ -197,12 +198,16 @@ const getMockedObject = (schema, doing = null, maxDepth = 20) => {
             results[key] = faker.datatype.float();
             break;
 
-          case `number`:
-            results[key] = faker.datatype.number();
+          case `integer`:
+            results[key] = 1;
             break;
 
-          case `bigint`:
-            results[key] = faker.datatype.bigInt();
+          case `biginteger`:
+            results[key] = '123';
+            break;
+
+          case `decimal`:
+            results[key] = faker.datatype.number({ min: 10, max: 100, precision: 0.01 });
             break;
 
           case `enumeration`:
