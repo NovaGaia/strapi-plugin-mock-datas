@@ -5,11 +5,12 @@
  *
  */
 
-import React from 'react';
-import { Switch, Route } from 'react-router-dom';
-import { NotFound } from '@strapi/helper-plugin';
-import pluginId from '../../pluginId';
+import { Route, Switch } from 'react-router-dom';
+
 import HomePage from '../HomePage';
+import { NotFound } from '@strapi/helper-plugin';
+import React from 'react';
+import pluginId from '../../utils/pluginId';
 
 const App = () => {
   return (

@@ -1,12 +1,14 @@
 'use strict';
 
+const pluginId = require('../../admin/src/utils/pluginId');
+
 module.exports = ({ strapi }) => ({
   getConfig() {
     try {
       const pluginStore = strapi.store({
         environment: strapi.config.environment,
         type: 'plugin',
-        name: 'nova-datas-mocker',
+        name: pluginId,
       });
 
       return pluginStore.get({ key: 'novaMockConfig' });
@@ -28,7 +30,7 @@ module.exports = ({ strapi }) => ({
       const pluginStore = strapi.store({
         environment: strapi.config.environment,
         type: 'plugin',
-        name: 'nova-datas-mocker',
+        name: pluginId,
       });
 
       return pluginStore.set({

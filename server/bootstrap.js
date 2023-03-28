@@ -1,18 +1,19 @@
 'use strict';
 const { getFullSchema, getMockedObject } = require('./helpers');
-// const { pluginId } = require('./pluginId');
+const pluginId = require('../admin/src/utils/pluginId');
 
 module.exports = ({ strapi }) => {
-  const defaultDepth = strapi.plugin('nova-datas-mocker')?.config('defaultDepth');
-  const consoleLog = strapi.plugin('nova-datas-mocker')?.config('consoleLog');
-  const addedPlugins = strapi.plugin('nova-datas-mocker')?.config('addedPlugins');
+  console.log(`bootstap`, pluginId);
+  const defaultDepth = strapi.plugin(pluginId)?.config('defaultDepth');
+  const consoleLog = strapi.plugin(pluginId)?.config('consoleLog');
+  const addedPlugins = strapi.plugin(pluginId)?.config('addedPlugins');
 
   const getConfig = () => {
     try {
       const pluginStore = strapi.store({
         environment: strapi.config.environment,
         type: 'plugin',
-        name: 'nova-datas-mocker',
+        name: pluginId,
       });
 
       return pluginStore.get({ key: 'novaMockConfig' });

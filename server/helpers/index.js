@@ -1,6 +1,7 @@
 const { isEmpty } = require('lodash/fp');
 const { faker } = require('@faker-js/faker');
 const { fakeMarkdown, fakeImage } = require('./fakeDatas');
+const pluginId = require('../../admin/src/utils/pluginId');
 
 const getModelPopulationAttributes = (model) => {
   if (model.uid === 'plugin::upload.file') {
@@ -52,8 +53,8 @@ const getFullSchema = (modelUid, maxDepth = 20) => {
   if (maxDepth <= 1) {
     return null;
   }
-  const customFields = strapi.plugin('nova-datas-mocker')?.config('customFields');
-  const consoleLog = strapi.plugin('nova-datas-mocker')?.config('consoleLog');
+  const customFields = strapi.plugin(pluginId).config('customFields');
+  const consoleLog = strapi.plugin(pluginId).config('consoleLog');
   if (
     modelUid.startsWith(`admin::`) ||
     modelUid.startsWith(`strapi::`) ||
@@ -128,8 +129,8 @@ const getMockedObject = (schema, doing = null, maxDepth = 20) => {
   if (maxDepth <= 1) {
     return null;
   }
+  const consoleLog = strapi.plugin(pluginId).config('consoleLog');
   if (!schema) return null;
-  const consoleLog = strapi.plugin('nova-datas-mocker')?.config('consoleLog');
   if (doing === null) {
     consoleLog && console.log(`Enter in > getMockedObject`);
   } else {

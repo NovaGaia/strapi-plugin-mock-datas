@@ -12,14 +12,16 @@ import { auth, useNotification } from '@strapi/helper-plugin';
 
 import { Helmet } from 'react-helmet';
 import axios from 'axios';
-import pluginId from '../../pluginId';
+import pluginId from '../../utils/pluginId';
 import pluginPkg from '../../../../package.json';
 
+console.log(`homepage`, pluginId);
 const name = pluginPkg.strapi.displayName;
 
 const HomePage = () => {
   const toggleNotification = useNotification();
   const [loading, setLoading] = useState(false);
+  const [hasChanged, setHasChanged] = useState(false);
   const mockEnabledRef = useRef('');
 
   const instance = axios.create({
@@ -49,6 +51,7 @@ const HomePage = () => {
     });
     switch (key) {
       case 'mockEnabled':
+        setHasChanged(!hasChanged);
         mockEnabledRef.current = e.target.checked;
         break;
       default:
@@ -91,6 +94,7 @@ const HomePage = () => {
         setData(JSON.parse(data.value));
       }
       setLoading(false);
+      setHasChanged(false);
       toggleNotification({
         type: 'success',
         message: {
@@ -99,6 +103,7 @@ const HomePage = () => {
         },
       });
     } catch (error) {
+      setHasChanged(false);
       setLoading(false);
       console.log(error);
       toggleNotification({
@@ -118,7 +123,12 @@ const HomePage = () => {
         subtitle={`Mock all your datas easily!`}
         as="h2"
         primaryAction={
-          <Button startIcon={<Check />} onClick={handelSave} loading={loading}>
+          <Button
+            startIcon={<Check />}
+            onClick={handelSave}
+            loading={loading}
+            disabled={!!!hasChanged}
+          >
             Save
           </Button>
         }
@@ -179,11 +189,8 @@ const HomePage = () => {
             }
             onLabel="True"
             offLabel="False"
-            // onChange={(e) => setChecked(e.target.checked)}
-            // checked={checked}
             checked={novaMockConfig.mockEnabled}
             refs={mockEnabledRef}
-            // value={novaMockConfig.mockEnabled}
             onChange={handleNovaMockConfigChange('mockEnabled')}
           />
         </Box>

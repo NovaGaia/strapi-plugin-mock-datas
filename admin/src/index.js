@@ -1,6 +1,6 @@
 import Initializer from './components/Initializer';
 import PluginIcon from './components/PluginIcon';
-import pluginId from './pluginId';
+import pluginId from './utils/pluginId';
 import pluginPkg from '../../package.json';
 import { prefixPluginTranslations } from '@strapi/helper-plugin';
 
