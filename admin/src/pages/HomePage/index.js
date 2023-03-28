@@ -141,18 +141,19 @@ const HomePage = () => {
         </Box>
         <Box paddingTop={2} paddingLeft={4}>
           <Typography variant="pi">
-            - The deep of the objects relation must be retrieve → <code>defaultDepth: 5</code> ;
+            - Indicates the depth (child level) of the data to be mocked →{' '}
+            <code>defaultDepth: 5</code> ;
           </Typography>
         </Box>
         <Box paddingTop={2} paddingLeft={4}>
           <Typography variant="pi">
-            - The default type of mock for your Custom components →{' '}
+            - The default type of mock for your Custom Fiedls →{' '}
             <code>customFields: {`{'plugin::name':'type'}`}</code> ;
           </Typography>
         </Box>
         <Box paddingTop={2} paddingLeft={4}>
           <Typography variant="pi">
-            - The list of your plugins to don't Mock →{' '}
+            - The list of plugins not to be replaced by mocked datas →{' '}
             <code>customFields: {`['plugin::name']`}</code>.
           </Typography>
         </Box>
