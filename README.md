@@ -1,167 +1,78 @@
-# Strapi plugin strapi-plugin-mock-datas
+# Strapi plugin Nova Mock Datas
 
-A quick description of strapi-plugin-mock-datas.
+A quick description of `nova-datas-mocker` made by [NovaGaïa](https://novagaia.fr/).
 
-## TODO
+This plugin aims to temporarily replace API responses with full mocks.
 
-- [ ] Readme
-- [ ] publish NPM
+This Strapi plugin was originally made to answer one of my problems when I develop for Gatsby.
+In order not to have GraphQL errors when fields/components/DynamicZone are not filled at all, it is necessary to create or force the creation of a Schema by Gatsby which identifies these fields. To do this, on the Gatsby side I use the plugin `gatsby-plugin-schema-snapshot`. But I have to fill at least 1 item for each Collection types with all the possibilities filled and the same for Single Types : it's tedious and generate errors, especially when we get snapshots from prod regularly.
 
-plutot utiliser `yarn install` que `npm install`
+That's why I created this plugin, so that it replaces, from time to time, the API responses by mocks that autogenerate with all the possibilities.
 
-utiliser node 16.19.0
+> I advise you to use `strapi-plugin-populate-deep` in parallel, so you don't have to declare all the populate=[*] on the Gatsby side. I was largely inspired by his plugin and I thank him for his work and for being an inspiration 🙏
 
-Le plugin nécessite un autre `strapi-plugin-populate-deep` qui permet(ra) de ne pas devoir déclarer tous les populate=[*] coté Gatsby.
-Il faudra peut-être aussi installer `@faker-js/faker`
+## 1. Installation
 
-Installation, clonner le plugin dans `./src/plugins`.
+## a. How to Install
 
-Ajouter à ./config/plugins.js :
+Copy the following code and run from your terminal
 
-```javascript
-'nova-datas-mocker': {
+```
+npm i nova-datas-mocker
+```
+
+or
+
+```
+yarn nova-datas-mocker
+```
+
+### b. Configuration
+
+#### I. plugins.js
+
+The configuration is done in the plugin configuration.
+
+```js
+// ./config/plugins.js
+// if change, run `npm run build --clean`
+module.exports = ({ env }) => ({
+  // ...
+  'nova-datas-mocker': {
     enabled: true,
-    resolve: './src/plugins/strapi-plugin-mock-datas',
     config: {
-        defaultDepth: 5, // default 5
-        consoleLog: false, // default false
-        customFields: { 'plugin::permalinks.permalink': `string` }, // default {}
-        addedPlugins: [`plugin::strapi-plugin-menus`] // default []
+      defaultDepth: 5, // default 5
+      consoleLog: false, // default false
+      customFields: { 'plugin::permalinks.permalink': `string` }, // default {}
+      addedPlugins: [`plugin::strapi-plugin-menus`], // default []
     },
-},
-```
-
-`customFields` contient un object référençant les types de mock à utiliser pour ce field non standard. Laisser vide si pas de customFields.
-
-Pour tester.
-
-Créer un nouveau projet Strapi vide avec la db sqlight pour faire plus simple.
-
-- J'ai créé des composants pour les ajouter dans les dynamicZones ou pour les utiliser directement dans les single type ou les collection types.
-- J'ai créé un collection type page avec la config plus bas. Il faudra tester aussi avec un Single type, c'est un des TODOS.
-- j'ai fait une relation recursive pour avoir une relation (je ferai de même dans un composant car je n'ai pas testé, c'est un des TODOS).
-
-Page :
-
-```javascript
-{
-  "kind": "collectionType",
-  "collectionName": "pages",
-  "info": {
-    "singularName": "page",
-    "pluralName": "pages",
-    "displayName": "Page",
-    "description": ""
   },
-  "options": {
-    "draftAndPublish": true
-  },
-  "pluginOptions": {},
-  "attributes": {
-    "title": {
-      "type": "string",
-      "required": true
-    },
-    "slug": {
-      "type": "customField",
-      "customField": "plugin::permalinks.permalink",
-      "targetField": "title",
-      "targetRelation": "parent",
-      "required": true
-    },
-    "content": {
-      "type": "richtext"
-    },
-    "parent": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::page.page"
-    },
-    "seo": {
-      "type": "component",
-      "repeatable": false,
-      "component": "shared.seo",
-      "required": true
-    },
-    "dynamicZone": {
-      "type": "dynamiczone",
-      "components": [
-        "simple.test",
-        "shared.seo"
-      ]
-    },
-    "myEmail": {
-      "type": "email"
-    },
-    "myPassword": {
-      "type": "password"
-    },
-    "myNumber": {
-      "type": "float"
-    },
-    "myDate": {
-      "type": "datetime"
-    },
-    "myUniqueMedia": {
-      "type": "media",
-      "multiple": false,
-      "required": false,
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ]
-    },
-    "MyMultipleMedias": {
-      "type": "media",
-      "multiple": true,
-      "required": false,
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ]
-    },
-    "myBoolean": {
-      "type": "boolean"
-    },
-    "myJson": {
-      "type": "json"
-    },
-    "myUID": {
-      "type": "uid",
-      "targetField": "title"
-    }
-  }
-}
+  // ...
+});
 ```
 
-Je n'ai pas connecté de Gatsby, donc je ne fais qu'un appel rest pour déclancher la contruction de la réponse
-je fais un GET sur http://localhost:1337/api/pages?populate=deep en passant le bearer créé dans Strapi.
+| Variable       | Description                                                                               | Type            | Default value |
+| -------------- | ----------------------------------------------------------------------------------------- | --------------- | ------------- |
+| `defaultDepth` | Indicate the deep of the genration of Mocking datas                                       | Int             | 5             |
+| `consoleLog`   | Enabled or not the verbous log                                                            | Boolean         | false         |
+| `customFields` | Object specifying which data type (Date, integer, Json, etc.) a CustomField should return | Object          | {}            |
+| `addedPlugins` | Array containing a list of plugins that should not be managed by this plugin              | Array of string | []            |
 
-Pour debug Strapi
+`customFields` :
 
-./.vscode/launch.json
+- `string`
+- `text`
+- `richtext`
+- `media`
+- `json`
+- `email`
+- `password`
+- `uid`
+- `boolean`
+- `float`
+- `integer`
+- `biginteger`
+- `enumeration`
+- `datetime`
 
-```json
-{
-  // Use IntelliSense to learn about possible attributes.
-  // Hover to view descriptions of existing attributes.
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "command": "npm run develop",
-      "name": "Run npm develop",
-      "request": "launch",
-      "type": "node-terminal",
-      "env": {
-        "DATABASE_SSL": "false",
-        "NODE_ENV": "development"
-      }
-    }
-  ]
-}
-```
+> The data is mostly generated by `@faker-js/faker` or copied real data (Markdown and Media for example).
