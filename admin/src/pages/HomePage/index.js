@@ -42,23 +42,15 @@ const HomePage = () => {
   };
 
   const handleNovaMockConfigChange = (key) => (e) => {
-    console.log('key', e);
+    console.log('key', e.target.checked);
     // update the refs
-    if (key === 'modelName') {
-      setNovaMockConfig({
-        ...novaMockConfig,
-        [key]: e,
-      });
-    } else {
-      setNovaMockConfig({
-        ...novaMockConfig,
-        [key]: e.target.value,
-      });
-    }
-
+    setNovaMockConfig({
+      ...novaMockConfig,
+      [key]: e.target.checked,
+    });
     switch (key) {
-      case 'apiKey':
-        apiKeyRef.current = e.target.value;
+      case 'mockEnabled':
+        mockEnabledRef.current = e.target.checked;
         break;
       default:
         break;
@@ -90,18 +82,6 @@ const HomePage = () => {
     const config = {
       mockEnabled: mockEnabledRef.current,
     };
-
-    // check if the api key  entered
-    if (!config.mockEnabled) {
-      toggleNotification({
-        type: 'warning',
-        message: {
-          id: 'nova-datas-mocker-enabled-required',
-          defaultMessage: 'Toggle needed!',
-        },
-      });
-      return;
-    }
     setLoading(true);
 
     try {
@@ -180,9 +160,10 @@ const HomePage = () => {
           hasRadius
         >
           <ToggleInput
+            id="enable-auto-mock-datas"
+            name="enable-auto-mock-datas"
             hint="Auto Mock Datas"
             label="Enabled"
-            name="enable-auto-mock-datas"
             labelAction={
               <Tooltip description="Toogle must be set to true to mock your datas">
                 <button
@@ -199,9 +180,11 @@ const HomePage = () => {
             }
             onLabel="True"
             offLabel="False"
-            checked={checked}
+            // onChange={(e) => setChecked(e.target.checked)}
+            // checked={checked}
+            checked={novaMockConfig.mockEnabled}
             refs={mockEnabledRef}
-            value={novaMockConfig.mockEnabled}
+            // value={novaMockConfig.mockEnabled}
             onChange={handleNovaMockConfigChange('mockEnabled')}
           />
         </Box>
