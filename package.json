@@ -11,8 +11,9 @@
   "private": false,
   "keywords": [
     "strapi",
-    "publish",
-    "multiple targets"
+    "mocking",
+    "datas",
+    "API"
   ],
   "author": {
     "name": "NovaGaïa",
