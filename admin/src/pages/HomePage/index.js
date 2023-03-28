@@ -7,7 +7,7 @@
 import { BaseHeaderLayout, ContentLayout } from '@strapi/design-system/Layout';
 import { Box, Button, Divider, ToggleInput, Tooltip, Typography } from '@strapi/design-system';
 import { Check, Information } from '@strapi/icons';
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { auth, useNotification } from '@strapi/helper-plugin';
 
 import { Helmet } from 'react-helmet';
@@ -18,7 +18,6 @@ import pluginPkg from '../../../../package.json';
 const name = pluginPkg.strapi.displayName;
 
 const HomePage = () => {
-  const [checked, setChecked] = useState(true);
   const toggleNotification = useNotification();
   const [loading, setLoading] = useState(false);
   const mockEnabledRef = useRef('');
