@@ -2,6 +2,11 @@
 
 A quick description of strapi-plugin-mock-datas.
 
+## TODO
+
+- [ ] Readme
+- [ ] publish NPM
+
 plutot utiliser `yarn install` que `npm install`
 
 utiliser node 16.19.0
