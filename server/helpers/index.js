@@ -52,8 +52,8 @@ const getFullSchema = (modelUid, maxDepth = 20) => {
   if (maxDepth <= 1) {
     return null;
   }
-  const customFields = strapi.plugin('strapi-plugin-mock-datas')?.config('customFields');
-  const consoleLog = strapi.plugin('strapi-plugin-mock-datas')?.config('consoleLog');
+  const customFields = strapi.plugin('nova-datas-mocker')?.config('customFields');
+  const consoleLog = strapi.plugin('nova-datas-mocker')?.config('consoleLog');
   if (
     modelUid.startsWith(`admin::`) ||
     modelUid.startsWith(`strapi::`) ||
@@ -129,7 +129,7 @@ const getMockedObject = (schema, doing = null, maxDepth = 20) => {
     return null;
   }
   if (!schema) return null;
-  const consoleLog = strapi.plugin('strapi-plugin-mock-datas')?.config('consoleLog');
+  const consoleLog = strapi.plugin('nova-datas-mocker')?.config('consoleLog');
   if (doing === null) {
     consoleLog && console.log(`Enter in > getMockedObject`);
   } else {

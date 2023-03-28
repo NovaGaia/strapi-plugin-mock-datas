@@ -14,13 +14,14 @@ Installation, clonner le plugin dans `./src/plugins`.
 Ajouter à ./config/plugins.js :
 
 ```javascript
-'strapi-plugin-mock-datas': {
+'nova-datas-mocker': {
     enabled: true,
     resolve: './src/plugins/strapi-plugin-mock-datas',
     config: {
         defaultDepth: 5, // default 5
         consoleLog: false, // default false
         customFields: { 'plugin::permalinks.permalink': `string` }, // default {}
+        addedPlugins: [`plugin::strapi-plugin-menus`] // default []
     },
 },
 ```

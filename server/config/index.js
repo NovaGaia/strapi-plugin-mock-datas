@@ -5,6 +5,7 @@ module.exports = {
     defaultDepth: 5,
     skipFields: [],
     customFields: [],
+    addedPlugins: [],
     consoleLog: false,
   },
   validator: () => {},

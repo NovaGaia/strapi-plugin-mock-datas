@@ -1,9 +1,11 @@
 'use strict';
-const { getFullPopulateObject, getFullSchema, getMockedObject } = require('./helpers');
+const { getFullSchema, getMockedObject } = require('./helpers');
+// const { pluginId } = require('./pluginId');
 
 module.exports = ({ strapi }) => {
-  const defaultDepth = strapi.plugin('strapi-plugin-mock-datas')?.config('defaultDepth');
-  const consoleLog = strapi.plugin('strapi-plugin-mock-datas')?.config('consoleLog');
+  const defaultDepth = strapi.plugin('nova-datas-mocker')?.config('defaultDepth');
+  const consoleLog = strapi.plugin('nova-datas-mocker')?.config('consoleLog');
+  const addedPlugins = strapi.plugin('nova-datas-mocker')?.config('addedPlugins');
   // Subscribe to the lifecycles that we are intrested in.
   strapi.db.lifecycles.subscribe((event) => {
     if (event.action === 'afterFindMany' || event.action === 'afterFindOne') {
@@ -13,10 +15,13 @@ module.exports = ({ strapi }) => {
         console.warn(`*************** FAKE DATA SENT BY API *********************`);
       }
       if (
+        // TODO: find all plugins
         event.model.uid.startsWith(`admin::`) ||
         event.model.uid.startsWith(`strapi::`) ||
         event.model.uid.startsWith(`plugin::users-permissions`) ||
-        event.model.uid.startsWith(`plugin::i18n`)
+        event.model.uid.startsWith(`plugin::i18n`) ||
+        event.model.uid.startsWith(`plugin::nova-datas-mocker`) ||
+        addedPlugins.includes(event.model.uid)
       ) {
         // don't change result...
       } else {
