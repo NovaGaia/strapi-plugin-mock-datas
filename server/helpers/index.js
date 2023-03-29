@@ -27,7 +27,9 @@ const getMiniSchema = (modelUid, maxDepth = 20) => {
   for (const [key, value] of Object.entries(getModelPopulationAttributes(model))) {
     switch (value.type) {
       case `component`:
-        schema[key] = getMiniSchema(value.component, maxDepth - 1);
+        schema[key] = value.repeatable
+          ? [getMiniSchema(value.component, maxDepth - 1)]
+          : getMiniSchema(value.component, maxDepth - 1);
         break;
 
       case `relation`:
@@ -96,13 +98,13 @@ const getFullSchema = (modelUid, maxDepth = 20) => {
               value.target,
               key === 'localizations' && maxDepth > 2 ? 1 : maxDepth - 1
             );
-            schema[key] = isEmpty(relationPopulate) ? null : relationPopulate;
+            isEmpty(relationPopulate) ? null : (schema[key] = relationPopulate);
             break;
           case 'dynamiczone':
             const dz = [];
             let count = 1;
             value.components.forEach((item) => {
-              const obj = getMiniSchema(item, maxDepth - 1);
+              const obj = getFullSchema(item, maxDepth - 1);
               if (obj) {
                 obj[`__component`] = item;
                 obj[`id`] = count;
@@ -111,7 +113,7 @@ const getFullSchema = (modelUid, maxDepth = 20) => {
               }
             });
             consoleLog && strapi.log.log(`output of DZ`, dz);
-            schema[key] = isEmpty(dz) ? null : dz;
+            isEmpty(dz) ? null : (schema[key] = dz);
             break;
 
           default:
