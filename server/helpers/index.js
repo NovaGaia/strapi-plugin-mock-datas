@@ -86,34 +86,39 @@ const getFullSchema = (modelUid, maxDepth = 20) => {
         consoleLog && strapi.log.log(`In ${modelUid} > ${key} is ${value.type}`);
         switch (value.type) {
           case 'component':
-            schema[key] = value.repeatable
-              ? [{ ...getFullSchema(value.component, maxDepth - 1), id: 1 }]
-              : getFullSchema(value.component, maxDepth - 1);
+            const componentPopulate = getFullSchema(value.component, maxDepth - 1);
+            isEmpty(componentPopulate)
+              ? null
+              : (schema[key] = value.repeatable
+                  ? [{ ...componentPopulate, id: 1 }]
+                  : componentPopulate);
             break;
           case 'media':
-            schema[key] = value.multiple ? `media_multiple` : `media_simple`;
+            isEmpty(value)
+              ? null
+              : (schema[key] = value.multiple ? `media_multiple` : `media_simple`);
             break;
           case 'relation':
             const relationPopulate = getFullSchema(
               value.target,
               key === 'localizations' && maxDepth > 2 ? 1 : maxDepth - 1
             );
-            isEmpty(relationPopulate) ? null : (schema[key] = relationPopulate);
+            isEmpty(relationPopulate) ? null : (schema[key] = { ...relationPopulate, id: 1 });
             break;
           case 'dynamiczone':
-            const dz = [];
+            const dynamicZonePopulate = [];
             let count = 1;
             value.components.forEach((item) => {
               const obj = getFullSchema(item, maxDepth - 1);
               if (obj) {
                 obj[`__component`] = item;
                 obj[`id`] = count;
-                dz.push(obj);
+                dynamicZonePopulate.push(obj);
                 count++;
               }
             });
-            consoleLog && strapi.log.log(`output of DZ`, dz);
-            isEmpty(dz) ? null : (schema[key] = dz);
+            consoleLog && strapi.log.log(`output of DZ`, dynamicZonePopulate);
+            isEmpty(dynamicZonePopulate) ? null : (schema[key] = dynamicZonePopulate);
             break;
 
           default:
@@ -123,7 +128,7 @@ const getFullSchema = (modelUid, maxDepth = 20) => {
       }
     }
   }
-  return isEmpty(schema) ? null : schema;
+  return isEmpty(schema) ? null : { ...schema, id: 1 };
 };
 
 /**
@@ -253,9 +258,6 @@ const getMockedObject = (schema, doing = null, maxDepth = 20) => {
   }
   if (isEmpty(results)) {
     return null;
-  } else if (doing === null) {
-    results[`id`] = 1;
-    return results;
   } else {
     return results;
   }
