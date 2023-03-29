@@ -226,10 +226,15 @@ const getMockedObject = (schema, doing = null, maxDepth = 20) => {
             break;
 
           case `datetime`:
-            results[key] = faker.date.between(
-              '2020-01-01T00:00:00.000Z',
-              '2030-01-01T00:00:00.000Z'
-            );
+            results[key] = faker.datatype.datetime();
+            break;
+
+          case `date`:
+            results[key] = '2023-03-15';
+            break;
+
+          case `time`:
+            results[key] = '00:05:00.000';
             break;
 
           default:

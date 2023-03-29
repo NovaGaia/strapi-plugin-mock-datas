@@ -8,7 +8,6 @@ const name = pluginPkg.strapi.displayName;
 
 export default {
   register(app) {
-    if (process.env.NODE_ENV === `production`) return null;
     app.addMenuLink({
       to: `/plugins/${pluginId}`,
       icon: PluginIcon,
@@ -32,7 +31,7 @@ export default {
     app.registerPlugin({
       id: pluginId,
       initializer: Initializer,
-      isReady: false,
+      isReady: process.env.NODE_ENV === `production`,
       name,
     });
   },
