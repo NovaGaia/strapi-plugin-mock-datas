@@ -8,6 +8,7 @@ const name = pluginPkg.strapi.displayName;
 
 export default {
   register(app) {
+    if (process.env.NODE_ENV === `production`) return null;
     app.addMenuLink({
       to: `/plugins/${pluginId}`,
       icon: PluginIcon,
@@ -35,7 +36,6 @@ export default {
       name,
     });
   },
-
   bootstrap(app) {},
   async registerTrads({ locales }) {
     const importedTrads = await Promise.all(

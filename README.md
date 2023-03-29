@@ -11,7 +11,10 @@ That's why I created this plugin, so that it replaces, from time to time, the AP
 
 > I advise you to use `strapi-plugin-populate-deep` in parallel, so you don't have to declare all the populate=[*] on the Gatsby side. I was largely inspired by his plugin and I thank him for his work and for being an inspiration 🙏
 
-**THIS PLUGIN IS AUTOMATICALLY DEACTIVATED IN PRODUCTION.**
+## WARNINGS
+
+- **THIS PLUGIN IS AUTOMATICALLY DEACTIVATED IN PRODUCTION.**
+- **FOR THE MOMENT, THIS PLUGING ONLY ALLOWS TO MOCK THE COLLECTION TYPES. THE DATA OF THE SINGLES TYPES ARE RETURNED IN A READONLY ATTIBUT :(**
 
 ## 1. Installation
 

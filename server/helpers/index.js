@@ -29,12 +29,18 @@ const getMiniSchema = (modelUid, maxDepth = 20) => {
       case `component`:
         schema[key] = getMiniSchema(value.component, maxDepth - 1);
         break;
+
       case `relation`:
         schema[key] = getFullSchema(
           value.target,
           key === 'localizations' && maxDepth > 2 ? 1 : maxDepth - 1
         );
         break;
+
+      case `media`:
+        schema[key] = value.multiple ? `media_multiple` : `media_simple`;
+        break;
+
       default:
         schema[key] = value.type;
         break;
@@ -61,29 +67,29 @@ const getFullSchema = (modelUid, maxDepth = 20) => {
     modelUid.startsWith(`plugin::users-permissions`) ||
     modelUid.startsWith(`plugin::i18n`)
   ) {
-    consoleLog && console.log(`Won't do ${modelUid}`);
+    consoleLog && strapi.log.log(`Won't do ${modelUid}`);
     return null;
   }
 
-  consoleLog && console.log(`Enter in > getFullSchema`);
-  consoleLog && console.log(`maxDepth = ${maxDepth}`);
+  consoleLog && strapi.log.log(`Enter in > getFullSchema`);
+  consoleLog && strapi.log.log(`maxDepth = ${maxDepth}`);
   const schema = {};
   const model = strapi.getModel(modelUid);
   for (const [key, value] of Object.entries(getModelPopulationAttributes(model))) {
     if (value) {
       if (value.customField) {
-        consoleLog && console.log(`In ${modelUid} > ${key} is customField ${value.customField}`);
+        consoleLog && strapi.log.log(`In ${modelUid} > ${key} is customField ${value.customField}`);
         schema[key] = customFields[value.customField];
       } else {
-        consoleLog && console.log(`In ${modelUid} > ${key} is ${value.type}`);
+        consoleLog && strapi.log.log(`In ${modelUid} > ${key} is ${value.type}`);
         switch (value.type) {
           case 'component':
             schema[key] = value.repeatable
-              ? [getFullSchema(value.component, maxDepth - 1)]
+              ? [{ ...getFullSchema(value.component, maxDepth - 1), id: 1 }]
               : getFullSchema(value.component, maxDepth - 1);
             break;
           case 'media':
-            schema[key] = `media`;
+            schema[key] = value.multiple ? `media_multiple` : `media_simple`;
             break;
           case 'relation':
             const relationPopulate = getFullSchema(
@@ -104,7 +110,7 @@ const getFullSchema = (modelUid, maxDepth = 20) => {
                 count++;
               }
             });
-            consoleLog && console.log(`output of DZ`, dz);
+            consoleLog && strapi.log.log(`output of DZ`, dz);
             schema[key] = isEmpty(dz) ? null : dz;
             break;
 
@@ -132,16 +138,16 @@ const getMockedObject = (schema, doing = null, maxDepth = 20) => {
   const consoleLog = strapi.plugin(pluginId).config('consoleLog');
   if (!schema) return null;
   if (doing === null) {
-    consoleLog && console.log(`Enter in > getMockedObject`);
+    consoleLog && strapi.log.log(`Enter in > getMockedObject`);
   } else {
-    consoleLog && console.log(`Do > ${doing}`);
+    consoleLog && strapi.log.log(`Do > ${doing}`);
   }
   const results = {};
   for (const [key, value] of Object.entries(schema)) {
     if (value) {
-      consoleLog && console.log(`typeof ${key}: ${typeof value}`);
+      consoleLog && strapi.log.log(`typeof ${key}: ${typeof value}`);
       if (typeof value === 'object') {
-        consoleLog && console.log(`isArray ${key}: ${Array.isArray(value)}`);
+        consoleLog && strapi.log.log(`isArray ${key}: ${Array.isArray(value)}`);
         if (Array.isArray(value)) {
           const tmpArr = value.map((item) => {
             return getMockedObject(item, key, maxDepth - 1);
@@ -150,7 +156,7 @@ const getMockedObject = (schema, doing = null, maxDepth = 20) => {
         } else {
           results[key] = getMockedObject(value, key, maxDepth - 1);
         }
-        doing === null && consoleLog ? console.log(results[key]) : null;
+        doing === null && consoleLog ? strapi.log.log(results[key]) : null;
       } else {
         switch (value) {
           case `__component`:
@@ -168,8 +174,15 @@ const getMockedObject = (schema, doing = null, maxDepth = 20) => {
             results[key] = fakeMarkdown;
             break;
 
-          case `media`:
+          case `media_simple`:
             results[key] = fakeImage;
+            break;
+
+          case `media_multiple`:
+            results[key] = [
+              { ...fakeImage, id: 1 },
+              { ...fakeImage, id: 2 },
+            ];
             break;
 
           case `json`:
@@ -223,7 +236,7 @@ const getMockedObject = (schema, doing = null, maxDepth = 20) => {
             if (key === `__component` || key === `id`) {
               results[key] = value;
             } else {
-              console.warn(`In ${key} > ${value} must be mocked!`);
+              strapi.log.warn(`In ${key} > ${value} must be mocked!`);
               results[key] = `todo: ${value}`;
             }
             break;

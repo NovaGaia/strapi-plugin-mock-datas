@@ -3,7 +3,6 @@ const { getFullSchema, getMockedObject } = require('./helpers');
 const pluginId = require('../admin/src/utils/pluginId');
 
 module.exports = ({ strapi }) => {
-  console.log(`bootstap`, pluginId);
   const defaultDepth = strapi.plugin(pluginId)?.config('defaultDepth');
   const consoleLog = strapi.plugin(pluginId)?.config('consoleLog');
   const addedPlugins = strapi.plugin(pluginId)?.config('addedPlugins');
@@ -26,35 +25,39 @@ module.exports = ({ strapi }) => {
     }
   };
 
-  const precessMock = (event) => {
-    console.warn(
+  const processMock = (event) => {
+    strapi.log.warn(
       `*************** ${event.model.uid} IS SENDING MOCKED DATAS /!\\  *********************`
     );
     consoleLog &&
-      console.log(
+      strapi.log.log(
         `Inital Schema`,
         JSON.stringify(strapi.getModel(event.model.uid).__schema__.attributes)
       );
     const schema = getFullSchema(event.model.uid, defaultDepth);
     if (schema !== undefined && consoleLog)
-      console.log(`returned schema: ${JSON.stringify(schema)}`);
+      strapi.log.log(`returned schema: ${JSON.stringify(schema)}`);
     const mockedObject = getMockedObject(schema, null, defaultDepth);
     if (mockedObject !== undefined && consoleLog)
-      console.log(`returned mockedObject: ${JSON.stringify(mockedObject)}`);
+      strapi.log.log(`returned mockedObject: ${JSON.stringify(mockedObject)}`);
     if (event.result && event.action === 'afterFindMany') {
       // Send only one result.
       event.result.length = 1;
       event.result[0] = mockedObject;
     } else if (event.result && event.action === 'afterFindOne') {
+      strapi.log.warn(
+        `Nova Datas Mock currently working only on collection, ${event.model.uid} has not been mocked :(`
+      );
       // result is protected, we clean it
-      for (const [key, value] of Object.entries(event.result)) {
-        event.result[key] = null;
+      for (const [key] of Object.entries(event.result)) {
+        delete event.result[key];
       }
       // the we fill it with the mockedObject
       for (const [key, value] of Object.entries(mockedObject)) {
         event.result[key] = value;
       }
     }
+    return event;
   };
 
   // Subscribe to the lifecycles that we are intrested in.
@@ -79,10 +82,10 @@ module.exports = ({ strapi }) => {
       } else {
         getConfig()
           .then((response) => {
-            consoleLog && console.log(`mockEnabled > ${response.mockEnabled}`);
-            if (response.mockEnabled) precessMock(event);
+            consoleLog && strapi.log.log(`mockEnabled > ${response.mockEnabled}`);
+            if (response.mockEnabled) processMock(event);
           })
-          .catch(console.error);
+          .catch(strapi.log.error);
       }
     }
   });
