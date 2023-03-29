@@ -1,3 +1,5 @@
+const pluginId = require('../../admin/src/utils/pluginId');
+
 const fakeMarkdown =
   '{"time":1679820667782,"blocks":[{"id":"v_cAIxUduo","type":"paragraph","data":{"text":"Bonjour, je m\'appelle Renaud, je suis le fondateur de <b>NovaGaïa</b>."}},{"id":"2PkaUL63Vh","type":"paragraph","data":{"text":"Welcome&nbsp;👋"}}],"version":"2.23.2"}';
 
@@ -20,7 +22,7 @@ const fakeImage = {
           width: 245,
           height: 138,
           size: 8.9,
-          url: '/uploads/thumbnail_main_BCG_7099addefe.jpg',
+          url: `../node_modules/${pluginId}/fakeImage/thumbnail_main_BCG_7099addefe.jpg`,
         },
         small: {
           name: 'small_mainBCG.jpg',
@@ -31,7 +33,7 @@ const fakeImage = {
           width: 500,
           height: 281,
           size: 36.38,
-          url: '/uploads/small_main_BCG_7099addefe.jpg',
+          url: '../node_modules/${pluginId}/fakeImage/small_main_BCG_7099addefe.jpg',
         },
         medium: {
           name: 'medium_mainBCG.jpg',
@@ -42,7 +44,7 @@ const fakeImage = {
           width: 750,
           height: 422,
           size: 84.38,
-          url: '/uploads/medium_main_BCG_7099addefe.jpg',
+          url: '../node_modules/${pluginId}/fakeImage/medium_main_BCG_7099addefe.jpg',
         },
         large: {
           name: 'large_mainBCG.jpg',
@@ -53,14 +55,14 @@ const fakeImage = {
           width: 1000,
           height: 563,
           size: 152.43,
-          url: '/uploads/large_main_BCG_7099addefe.jpg',
+          url: '../node_modules/${pluginId}/fakeImage/large_main_BCG_7099addefe.jpg',
         },
       },
       hash: 'main_BCG_7099addefe',
       ext: '.jpg',
       mime: 'image/jpeg',
       size: 387.73,
-      url: '/uploads/main_BCG_7099addefe.jpg',
+      url: '../node_modules/${pluginId}/fakeImage/main_BCG_7099addefe.jpg',
       previewUrl: null,
       provider: 'local',
       provider_metadata: null,
