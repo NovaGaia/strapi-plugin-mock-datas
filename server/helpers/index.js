@@ -22,6 +22,10 @@ const getFullSchema = (modelUid, maxDepth = 20, consoleLog = false, customFields
     return null;
   }
 
+  if (modelUid === 'admin::user') {
+    return null;
+  }
+
   consoleLog && strapi.log.log(`Enter in > getFullSchema`);
   consoleLog && strapi.log.log(`maxDepth = ${maxDepth}`);
   const schema = {};
