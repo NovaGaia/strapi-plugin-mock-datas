@@ -27,7 +27,7 @@ const getFullSchema = (modelUid, maxDepth = 20, consoleLog = false, customFields
   }
 
   consoleLog && strapi.log.log(`Enter in > getFullSchema`);
-  consoleLog && strapi.log.log(`maxDepth = ${maxDepth}`);
+  consoleLog && strapi.log.log(`maxDepth =`, maxDepth);
   const schema = {};
   const model = strapi.getModel(modelUid);
   for (const [key, value] of Object.entries(getModelPopulationAttributes(model))) {

@@ -17,7 +17,7 @@ module.exports = ({ strapi }) => ({
       const mockedObject = getMockedObject(schema, null, defaultDepth, consoleLog);
       // single
       if (_.has(ctx.body.data, 'attributes')) {
-        consoleLog && console.log(`In transformResponse > is single type`, ctx.body.data);
+        consoleLog && strapi.log.log(`In transformResponse > is single type`, ctx.body.data);
         ctx.body.data = { id: 1, attributes: mockedObject };
       }
 
@@ -27,7 +27,7 @@ module.exports = ({ strapi }) => ({
         ctx.body.data.length &&
         _.has(_.head(ctx.body.data), 'attributes')
       ) {
-        consoleLog && console.log(`In transformResponse > is collection type`, ctx.body.data);
+        consoleLog && strapi.log.log(`In transformResponse > is collection type`, ctx.body.data);
         ctx.body.data = [{ id: 1, attributes: mockedObject }];
       }
       return null;
