@@ -68,7 +68,13 @@ const getFullSchema = (modelUid, maxDepth = 20, consoleLog = false, customFields
               consoleLog,
               customFields
             );
-            isEmpty(relationPopulate) ? null : (schema[key] = { ...relationPopulate, id: 1 });
+            // fix #1
+            isEmpty(relationPopulate)
+              ? null
+              : (schema[key] =
+                  value.relation === 'oneToMany' || value.relation === 'manyToMany'
+                    ? [{ ...relationPopulate, id: 1 }]
+                    : { ...relationPopulate, id: 1 });
             break;
           case 'dynamiczone':
             const dynamicZonePopulate = [];
