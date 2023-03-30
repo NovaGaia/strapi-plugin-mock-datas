@@ -26,17 +26,22 @@ const getFullSchema = (modelUid, maxDepth = 20, consoleLog = false, customFields
     return null;
   }
 
-  consoleLog && strapi.log.log(`Enter in > getFullSchema`);
-  consoleLog && strapi.log.log(`maxDepth =`, maxDepth);
+  consoleLog &&
+    strapi.log.info(
+      `Schema > Enter in > getFullSchema with modelUid: ${modelUid} | maxDepth = ${maxDepth}`
+    );
   const schema = {};
   const model = strapi.getModel(modelUid);
   for (const [key, value] of Object.entries(getModelPopulationAttributes(model))) {
     if (value) {
       if (value.customField) {
-        consoleLog && strapi.log.log(`In ${modelUid} > ${key} is customField ${value.customField}`);
+        consoleLog &&
+          strapi.log.debug(
+            `Schema > Do > ${modelUid} > ${key} is customField ${value.customField}`
+          );
         schema[key] = customFields[value.customField];
       } else {
-        consoleLog && strapi.log.log(`In ${modelUid} > ${key} is ${value.type}`);
+        consoleLog && strapi.log.debug(`Schema > Do > ${modelUid} > ${key} is ${value.type}`);
         switch (value.type) {
           case 'component':
             const componentPopulate = getFullSchema(
@@ -77,7 +82,6 @@ const getFullSchema = (modelUid, maxDepth = 20, consoleLog = false, customFields
                 count++;
               }
             });
-            consoleLog && strapi.log.log(`output of DZ`, dynamicZonePopulate);
             isEmpty(dynamicZonePopulate) ? null : (schema[key] = dynamicZonePopulate);
             break;
 
@@ -104,16 +108,16 @@ const getMockedObject = (schema, doing = null, maxDepth = 20, consoleLog = false
   }
   if (!schema) return null;
   if (doing === null) {
-    consoleLog && strapi.log.log(`Enter in > getMockedObject`);
+    consoleLog && strapi.log.debug(`Enter in > getMockedObject`);
   } else {
-    consoleLog && strapi.log.log(`Do > ${doing}`);
+    consoleLog && strapi.log.debug(`Mocking > ${doing}`);
   }
   const results = {};
   for (const [key, value] of Object.entries(schema)) {
     if (value) {
-      consoleLog && strapi.log.log(`typeof ${key}: ${typeof value}`);
+      // consoleLog && strapi.log.debug(`Mocking > typeof ${key}: ${typeof value}`);
       if (typeof value === 'object') {
-        consoleLog && strapi.log.log(`isArray ${key}: ${Array.isArray(value)}`);
+        // consoleLog && strapi.log.debug(`Mocking > isArray ${key}: ${Array.isArray(value)}`);
         if (Array.isArray(value)) {
           const tmpArr = value.map((item) => {
             return getMockedObject(item, key, maxDepth - 1, consoleLog);
@@ -122,7 +126,6 @@ const getMockedObject = (schema, doing = null, maxDepth = 20, consoleLog = false
         } else {
           results[key] = getMockedObject(value, key, maxDepth - 1, consoleLog);
         }
-        doing === null && consoleLog ? strapi.log.log(results[key]) : null;
       } else {
         switch (value) {
           case `__component`:

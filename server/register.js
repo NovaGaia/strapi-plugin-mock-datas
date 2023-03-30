@@ -26,7 +26,6 @@ module.exports = ({ strapi }) => {
 
     // get APIs to mock
     const apisToMock = _.get(settings, ['apisToMock', uid], false);
-    const defaultDeep = _.get(settings, ['apisToMock'], 5);
     if (!apisToMock && _.isBoolean(apisToMock)) {
       continue;
     }

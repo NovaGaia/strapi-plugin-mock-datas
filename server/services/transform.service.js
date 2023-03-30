@@ -10,14 +10,15 @@ module.exports = ({ strapi }) => ({
       settings: { defaultDepth, customFields, consoleLog },
     } = datas;
     if (mockEnabled) {
-      strapi.log.warn(
-        `*************** ${modelUid} IS SENDING MOCKED DATAS /!\\  *********************`
-      );
+      strapi.log.warn(`*************** ${modelUid} IS SENDING MOCKED DATAS /!\\ ***************`);
+      consoleLog && strapi.log.info(`*************** START ${modelUid} ***************`);
+      consoleLog && strapi.log.debug(`*************** GENERATING SCHEMA ***************`);
       const schema = getFullSchema(modelUid, defaultDepth, consoleLog, customFields);
+      consoleLog && strapi.log.debug(`*************** GENERATING MOCK ***************`);
       const mockedObject = getMockedObject(schema, null, defaultDepth, consoleLog);
+      consoleLog && strapi.log.debug(`*************** APPLYING MOCK ***************`);
       // single
       if (_.has(ctx.body.data, 'attributes')) {
-        consoleLog && strapi.log.log(`In transformResponse > is single type`, ctx.body.data);
         ctx.body.data = { id: 1, attributes: mockedObject };
       }
 
@@ -27,9 +28,9 @@ module.exports = ({ strapi }) => ({
         ctx.body.data.length &&
         _.has(_.head(ctx.body.data), 'attributes')
       ) {
-        consoleLog && strapi.log.log(`In transformResponse > is collection type`, ctx.body.data);
         ctx.body.data = [{ id: 1, attributes: mockedObject }];
       }
+      consoleLog && strapi.log.info(`*************** END ${modelUid} ***************`);
       return null;
     }
   },
