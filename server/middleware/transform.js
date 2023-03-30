@@ -4,7 +4,6 @@ const _ = require('lodash');
 const { getPluginService } = require('../utils/getPluginService');
 
 const transform = async (strapi, ctx, next, datas) => {
-  datas.settings = getPluginService('datasMockerServices').getConfigPlugin();
   datas.configStore = await getPluginService('datasMockerServices').getConfigStore();
 
   await next();

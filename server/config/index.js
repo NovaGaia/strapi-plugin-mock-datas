@@ -5,7 +5,6 @@ module.exports = {
     defaultDepth: 5,
     apisToMock: {},
     customFields: [],
-    addedPlugins: [],
     consoleLog: false,
   },
   validator: () => {},

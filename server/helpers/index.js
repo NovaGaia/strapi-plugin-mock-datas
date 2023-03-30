@@ -1,7 +1,6 @@
 const { isEmpty } = require('lodash/fp');
 const { faker } = require('@faker-js/faker');
 const { fakeMarkdown, fakeImage } = require('./fakeDatas');
-const { pluginId } = require('../utils/pluginId');
 
 const getModelPopulationAttributes = (model) => {
   if (model.uid === 'plugin::upload.file') {
@@ -18,12 +17,10 @@ const getModelPopulationAttributes = (model) => {
  * @param {Int} maxDepth Deep of the schema
  * @returns {}
  */
-const getFullSchema = (modelUid, maxDepth = 20) => {
+const getFullSchema = (modelUid, maxDepth = 20, consoleLog = false, customFields = {}) => {
   if (maxDepth <= 1) {
     return null;
   }
-  const customFields = strapi.plugin(pluginId).config('customFields');
-  const consoleLog = strapi.plugin(pluginId).config('consoleLog');
 
   consoleLog && strapi.log.log(`Enter in > getFullSchema`);
   consoleLog && strapi.log.log(`maxDepth = ${maxDepth}`);
@@ -38,7 +35,12 @@ const getFullSchema = (modelUid, maxDepth = 20) => {
         consoleLog && strapi.log.log(`In ${modelUid} > ${key} is ${value.type}`);
         switch (value.type) {
           case 'component':
-            const componentPopulate = getFullSchema(value.component, maxDepth - 1);
+            const componentPopulate = getFullSchema(
+              value.component,
+              maxDepth - 1,
+              consoleLog,
+              customFields
+            );
             isEmpty(componentPopulate)
               ? null
               : (schema[key] = value.repeatable
@@ -53,7 +55,9 @@ const getFullSchema = (modelUid, maxDepth = 20) => {
           case 'relation':
             const relationPopulate = getFullSchema(
               value.target,
-              key === 'localizations' && maxDepth > 2 ? 1 : maxDepth - 1
+              key === 'localizations' && maxDepth > 2 ? 1 : maxDepth - 1,
+              consoleLog,
+              customFields
             );
             isEmpty(relationPopulate) ? null : (schema[key] = { ...relationPopulate, id: 1 });
             break;
@@ -61,7 +65,7 @@ const getFullSchema = (modelUid, maxDepth = 20) => {
             const dynamicZonePopulate = [];
             let count = 1;
             value.components.forEach((item) => {
-              const obj = getFullSchema(item, maxDepth - 1);
+              const obj = getFullSchema(item, maxDepth - 1, consoleLog, customFields);
               if (obj) {
                 obj[`__component`] = item;
                 obj[`id`] = count;
@@ -90,11 +94,10 @@ const getFullSchema = (modelUid, maxDepth = 20) => {
  * @param {*} maxDepth Deep of the fake data
  * @returns {}
  */
-const getMockedObject = (schema, doing = null, maxDepth = 20) => {
+const getMockedObject = (schema, doing = null, maxDepth = 20, consoleLog = false) => {
   if (maxDepth <= 1) {
     return null;
   }
-  const consoleLog = strapi.plugin(pluginId).config('consoleLog');
   if (!schema) return null;
   if (doing === null) {
     consoleLog && strapi.log.log(`Enter in > getMockedObject`);
@@ -109,11 +112,11 @@ const getMockedObject = (schema, doing = null, maxDepth = 20) => {
         consoleLog && strapi.log.log(`isArray ${key}: ${Array.isArray(value)}`);
         if (Array.isArray(value)) {
           const tmpArr = value.map((item) => {
-            return getMockedObject(item, key, maxDepth - 1);
+            return getMockedObject(item, key, maxDepth - 1, consoleLog);
           });
           results[key] = tmpArr;
         } else {
-          results[key] = getMockedObject(value, key, maxDepth - 1);
+          results[key] = getMockedObject(value, key, maxDepth - 1, consoleLog);
         }
         doing === null && consoleLog ? strapi.log.log(results[key]) : null;
       } else {

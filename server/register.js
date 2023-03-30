@@ -43,7 +43,7 @@ module.exports = ({ strapi }) => {
       }
       const datas = {
         apisToMock: uid,
-        defaultDeep: defaultDeep,
+        settings: settings,
       };
       // register route middleware
       strapi.api[ct].routes[ct].routes[i].config.middlewares.push((ctx, next) =>

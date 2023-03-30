@@ -1,28 +1,35 @@
 const { pluginId } = require('../utils/pluginId');
 const { getFullSchema, getMockedObject } = require('../helpers');
+const _ = require('lodash');
 
 module.exports = ({ strapi }) => ({
   transformResponse(ctx, datas) {
     const {
       configStore: { mockEnabled },
       apisToMock: modelUid,
-      defaultDepth,
+      settings: { defaultDepth, customFields, consoleLog },
     } = datas;
     if (mockEnabled) {
-      const { kind } = strapi.getModel(modelUid);
-      const schema = getFullSchema(modelUid, defaultDepth);
-      const mockedObject = getMockedObject(schema, null, defaultDepth);
-      const mockedBody = {};
-      if (kind === `singleType`) {
-        mockedBody = { id: 1, attributes: mockedObject };
-      } else if (kind === `collectionType`) {
-        mockedBody = {
-          data: [mockedObject],
-          meta: { pagination: { page: 1, pageSize: 25, pageCount: 1, total: 1 } },
-        };
+      strapi.log.warn(
+        `*************** ${modelUid} IS SENDING MOCKED DATAS /!\\  *********************`
+      );
+      const schema = getFullSchema(modelUid, defaultDepth, consoleLog, customFields);
+      const mockedObject = getMockedObject(schema, null, defaultDepth, consoleLog);
+      // single
+      if (_.has(ctx.body.data, 'attributes')) {
+        consoleLog && console.log(`In transformResponse > is single type`, ctx.body.data);
+        ctx.body.data = { id: 1, attributes: mockedObject };
       }
-      ctx.body = mockedBody;
-      //   console.log(`CTX`, ctx);
+
+      // collection
+      if (
+        _.isArray(ctx.body.data) &&
+        ctx.body.data.length &&
+        _.has(_.head(ctx.body.data), 'attributes')
+      ) {
+        consoleLog && console.log(`In transformResponse > is collection type`, ctx.body.data);
+        ctx.body.data = [{ id: 1, attributes: mockedObject }];
+      }
       return null;
     }
   },

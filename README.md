@@ -10,11 +10,11 @@ In order not to have GraphQL errors when fields/components/DynamicZone are not f
 That's why I created this plugin, so that it replaces, from time to time, the API responses by mocks that autogenerate with all the possibilities.
 
 > I advise you to use `strapi-plugin-populate-deep` in parallel, so you don't have to declare all the populate=[*] on the Gatsby side. I was largely inspired by his plugin and I thank him for his work and for being an inspiration 🙏
+> I was inspirad by this other plugin `strapi-plugin-transformer`, so I want to thank him to.
 
 ## WARNINGS
 
 - **THIS PLUGIN IS AUTOMATICALLY DEACTIVATED IN PRODUCTION.**
-- **FOR THE MOMENT, THIS PLUGING ONLY ALLOWS TO MOCK THE COLLECTION TYPES. THE DATA OF THE SINGLES TYPES ARE RETURNED IN A READONLY ATTIBUT :(**
 
 ## 1. Installation
 
@@ -49,19 +49,19 @@ module.exports = ({ env }) => ({
       defaultDepth: 5, // default 5
       consoleLog: false, // default false
       customFields: { 'plugin::permalinks.permalink': `string` }, // default {}
-      addedPlugins: [`plugin::strapi-plugin-menus`], // default []
+      apisToMock: { 'api::page.page': true, 'api::global.global': true }, // default {}
     },
   },
   // ...
 });
 ```
 
-| Variable       | Description                                                                               | Type            | Default value |
-| -------------- | ----------------------------------------------------------------------------------------- | --------------- | ------------- |
-| `defaultDepth` | Indicate the deep of the genration of Mocking datas                                       | Int             | 5             |
-| `consoleLog`   | Enabled or not the verbous log                                                            | Boolean         | false         |
-| `customFields` | Object specifying which data type (Date, integer, Json, etc.) a CustomField should return | Object          | {}            |
-| `addedPlugins` | Array containing a list of plugins that should not be managed by this plugin              | Array of string | []            |
+| Variable       | Description                                                                               | Type    | Default value |
+| -------------- | ----------------------------------------------------------------------------------------- | ------- | ------------- |
+| `defaultDepth` | Indicate the deep of the genration of Mocking datas                                       | Int     | 5             |
+| `consoleLog`   | Enabled or not the verbous log                                                            | Boolean | false         |
+| `customFields` | Object specifying which data type (Date, integer, Json, etc.) a CustomField should return | Object  | {}            |
+| `apisToMock`   | Object containing a list of plugins that should not be managed by this plugin             | Object  | {}            |
 
 `customFields` must return one of those data types :
 
