@@ -3,7 +3,10 @@
 const pluginId = require('../../admin/src/utils/pluginId');
 
 module.exports = ({ strapi }) => ({
-  getConfig() {
+  getConfigPlugin() {
+    return strapi.config.get(`plugin.${pluginId}`);
+  },
+  getConfigStore() {
     try {
       const pluginStore = strapi.store({
         environment: strapi.config.environment,
@@ -21,7 +24,7 @@ module.exports = ({ strapi }) => ({
     }
   },
 
-  updateConfig(ctx) {
+  updateConfigStore(ctx) {
     try {
       const reqBody = ctx.request.body;
       const data = {

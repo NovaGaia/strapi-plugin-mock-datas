@@ -4,16 +4,24 @@ module.exports = {
   routes: [
     {
       method: 'GET',
-      path: '/config',
-      handler: 'novaController.getConfig',
+      path: '/configPlugin',
+      handler: 'novaController.getConfigPlugin',
+      config: {
+        policies: [],
+      },
+    },
+    {
+      method: 'GET',
+      path: '/configStore',
+      handler: 'novaController.getConfigStore',
       config: {
         policies: [],
       },
     },
     {
       method: 'POST',
-      path: '/config/update',
-      handler: 'novaController.updateConfig',
+      path: '/configStore/update',
+      handler: 'novaController.updateConfigStore',
       config: {
         policies: [],
       },

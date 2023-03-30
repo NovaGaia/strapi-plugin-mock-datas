@@ -15,7 +15,6 @@ import axios from 'axios';
 import pluginId from '../../utils/pluginId';
 import pluginPkg from '../../../../package.json';
 
-console.log(`homepage`, pluginId);
 const name = pluginPkg.strapi.displayName;
 
 const HomePage = () => {
@@ -32,21 +31,24 @@ const HomePage = () => {
     },
   });
 
-  const [novaMockConfig, setNovaMockConfig] = useState({
+  const [novaMockConfigStore, setNovaMockConfigStore] = useState({
     mockEnabled: false,
   });
+  const [novaMockPluginConfig, setNovaMockPluginConfig] = useState({});
 
-  const setData = (data) => {
-    setNovaMockConfig(data);
+  const setDataStore = (data) => {
+    setNovaMockConfigStore(data);
     // update the refs
     mockEnabledRef.current = data.mockEnabled;
   };
+  const setDataPlugin = (data) => {
+    setNovaMockPluginConfig(data);
+  };
 
-  const handleNovaMockConfigChange = (key) => (e) => {
-    console.log('key', e.target.checked);
+  const handleNovaMockConfigStoreChange = (key) => (e) => {
     // update the refs
-    setNovaMockConfig({
-      ...novaMockConfig,
+    setNovaMockConfigStore({
+      ...novaMockConfigStore,
       [key]: e.target.checked,
     });
     switch (key) {
@@ -61,22 +63,38 @@ const HomePage = () => {
 
   useEffect(() => {
     setLoading(true);
-    const fetchNovaMockerConfig = async () => {
+    const fetchNovaMockerConfigStore = async () => {
       try {
-        const { data } = await instance.get('/nova-datas-mocker/config');
-        setData(data);
+        const { data } = await instance.get(`/${pluginId}/configStore`);
+        setDataStore(data);
       } catch (error) {
         console.log(error);
         toggleNotification({
           type: 'warning',
           message: {
-            id: 'nova-datas-mocker-config-fetch-error',
+            id: 'nova-datas-mocker-config-store-fetch-error',
             defaultMessage: 'Error while fetching the Nova Datas Mocker configurations',
           },
         });
       }
     };
-    fetchNovaMockerConfig();
+    fetchNovaMockerConfigStore();
+    const fetchNovaMockerPluginConfig = async () => {
+      try {
+        const { data } = await instance.get(`/${pluginId}/configPlugin`);
+        setDataPlugin(data);
+      } catch (error) {
+        console.log(error);
+        toggleNotification({
+          type: 'warning',
+          message: {
+            id: 'nova-datas-mocker-config-plugin-fetch-error',
+            defaultMessage: 'Error while fetching the Nova Datas Mocker configurations',
+          },
+        });
+      }
+    };
+    fetchNovaMockerPluginConfig();
     setLoading(false);
   }, []);
 
@@ -87,18 +105,18 @@ const HomePage = () => {
     setLoading(true);
 
     try {
-      const { data } = await instance.post('/nova-datas-mocker/config/update', {
-        ...novaMockConfig,
+      const { data } = await instance.post('/nova-datas-mocker/configStore/update', {
+        ...novaMockConfigStore,
       });
       if (data && data.value) {
-        setData(JSON.parse(data.value));
+        setDataStore(JSON.parse(data.value));
       }
       setLoading(false);
       setHasChanged(false);
       toggleNotification({
         type: 'success',
         message: {
-          id: 'nova-datas-mocker-config-save-success',
+          id: 'nova-datas-mocker-config-store-save-success',
           defaultMessage: 'Nova Datas Mocker configurations saved successfully',
         },
       });
@@ -109,7 +127,7 @@ const HomePage = () => {
       toggleNotification({
         type: 'warning',
         message: {
-          id: 'nova-datas-mocker-config-save-error',
+          id: 'nova-datas-mocker-config-store-save-error',
           defaultMessage: 'Error while saving the Nova Datas Mocker configurations',
         },
       });
@@ -134,32 +152,6 @@ const HomePage = () => {
         }
       />
       <ContentLayout>
-        <Box paddingTop={2} paddingLeft={4}>
-          <Typography variant="omega" fontWeight="semiBold">
-            You must set in the plugin configuration:
-          </Typography>
-        </Box>
-        <Box paddingTop={2} paddingLeft={4}>
-          <Typography variant="pi">
-            - Indicates the depth (child level) of the data to be mocked →{' '}
-            <code>defaultDepth: 5</code> ;
-          </Typography>
-        </Box>
-        <Box paddingTop={2} paddingLeft={4}>
-          <Typography variant="pi">
-            - The default type of mock for your Custom Fiedls →{' '}
-            <code>customFields: {`{'plugin::name':'type'}`}</code> ;
-          </Typography>
-        </Box>
-        <Box paddingTop={2} paddingLeft={4}>
-          <Typography variant="pi">
-            - The list of plugins not to be replaced by mocked datas →{' '}
-            <code>customFields: {`['plugin::name']`}</code>.
-          </Typography>
-        </Box>
-        <Box padding={8}>
-          <Divider />
-        </Box>
         <Box
           paddingTop={4}
           paddingLeft={4}
@@ -190,10 +182,57 @@ const HomePage = () => {
             }
             onLabel="True"
             offLabel="False"
-            checked={novaMockConfig.mockEnabled}
+            checked={novaMockConfigStore.mockEnabled}
             refs={mockEnabledRef}
-            onChange={handleNovaMockConfigChange('mockEnabled')}
+            onChange={handleNovaMockConfigStoreChange('mockEnabled')}
           />
+        </Box>
+        {/* <Box padding={8}>
+          <Divider />
+        </Box> */}
+        <Box
+          marginTop={8}
+          paddingTop={4}
+          paddingLeft={4}
+          shadow="tableShadow"
+          background="neutral0"
+          paddingRight={4}
+          paddingBottom={4}
+          hasRadius
+        >
+          <Box paddingTop={2} paddingLeft={4}>
+            <Typography variant="omega" fontWeight="semiBold">
+              You must set in the plugin configuration:
+            </Typography>
+          </Box>
+          <Box paddingTop={2} paddingLeft={4}>
+            <Typography variant="pi">
+              - Indicates the depth (child level) of the data to be mocked →{' '}
+              <code>defaultDepth: 5</code> ;
+            </Typography>
+          </Box>
+          <Box paddingTop={2} paddingLeft={4}>
+            <Typography variant="pi">
+              - The default type of mock for your Custom Fiedls →{' '}
+              <code>customFields: {`{'plugin::name':'type'}`}</code> ;
+            </Typography>
+          </Box>
+          <Box paddingTop={2} paddingLeft={4}>
+            <Typography variant="pi">
+              - The list of plugins not to be replaced by mocked datas →{' '}
+              <code>customFields: {`['plugin::name']`}</code>.
+            </Typography>
+          </Box>
+          <Box paddingTop={2} paddingLeft={4}>
+            <Typography variant="omega" fontWeight="semiBold">
+              Your actual plugin config:
+            </Typography>
+          </Box>
+          <Box paddingTop={2} paddingLeft={4}>
+            <Typography variant="pi">
+              <pre>{JSON.stringify(novaMockPluginConfig, undefined, 2)}</pre>
+            </Typography>
+          </Box>
         </Box>
       </ContentLayout>
     </>
