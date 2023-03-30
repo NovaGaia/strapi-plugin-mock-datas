@@ -230,7 +230,7 @@ const HomePage = () => {
           </Box>
           <Box paddingTop={2} paddingLeft={4}>
             <Typography variant="pi">
-              <pre>{JSON.stringify(novaMockPluginConfig, undefined, 2)}</pre>
+              <pre>{JSON.stringify(novaMockPluginConfig, undefined, 4)}</pre>
             </Typography>
           </Box>
         </Box>

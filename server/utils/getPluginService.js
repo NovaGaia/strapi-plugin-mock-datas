@@ -1,6 +1,6 @@
 'use strict';
 
-const { pluginId } = require('../../admin/src/utils/pluginId');
+const { pluginId } = require('./pluginId');
 
 /**
  * A helper function to obtain a plugin service

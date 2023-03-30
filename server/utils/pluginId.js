@@ -1,6 +1,6 @@
 'use strict';
 
-const pluginPkg = require('../../../package.json');
+const pluginPkg = require('../../package.json');
 
 /**
  * Returns the plugin id
@@ -9,4 +9,4 @@ const pluginPkg = require('../../../package.json');
  */
 const pluginId = pluginPkg.strapi.name;
 
-module.exports = pluginId;
+module.exports = { pluginId };

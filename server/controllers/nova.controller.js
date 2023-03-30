@@ -1,9 +1,10 @@
 'use strict';
 
-const pluginId = require('../../admin/src/utils/pluginId');
+const { pluginId } = require('../utils/pluginId');
 
 module.exports = ({ strapi }) => ({
   async getConfigPlugin(ctx) {
+    console.log(`pluginId`, pluginId);
     const config = await strapi.plugin(pluginId).service('datasMockerServices').getConfigPlugin();
     ctx.send(config);
   },

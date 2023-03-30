@@ -1,6 +1,6 @@
 'use strict';
 
-const pluginId = require('../../admin/src/utils/pluginId');
+const { pluginId } = require('../utils/pluginId');
 
 module.exports = ({ strapi }) => ({
   getConfigPlugin() {

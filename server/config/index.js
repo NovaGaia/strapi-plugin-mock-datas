@@ -3,7 +3,7 @@
 module.exports = {
   default: {
     defaultDepth: 5,
-    apisToMock: [],
+    apisToMock: {},
     customFields: [],
     addedPlugins: [],
     consoleLog: false,

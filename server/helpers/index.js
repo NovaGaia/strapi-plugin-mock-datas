@@ -1,7 +1,7 @@
 const { isEmpty } = require('lodash/fp');
 const { faker } = require('@faker-js/faker');
 const { fakeMarkdown, fakeImage } = require('./fakeDatas');
-const pluginId = require('../../admin/src/utils/pluginId');
+const { pluginId } = require('../utils/pluginId');
 
 const getModelPopulationAttributes = (model) => {
   if (model.uid === 'plugin::upload.file') {
@@ -10,45 +10,6 @@ const getModelPopulationAttributes = (model) => {
   }
 
   return model.attributes;
-};
-
-/**
- * Methode dedicate to generate part of the schema for dynamiczone
- * @param {String} modelUid Model name
- * @param {Int} maxDepth Deep of the schema
- * @returns {}
- */
-const getMiniSchema = (modelUid, maxDepth = 20) => {
-  if (maxDepth <= 1) {
-    return null;
-  }
-  const schema = {};
-  const model = strapi.getModel(modelUid);
-  for (const [key, value] of Object.entries(getModelPopulationAttributes(model))) {
-    switch (value.type) {
-      case `component`:
-        schema[key] = value.repeatable
-          ? [getMiniSchema(value.component, maxDepth - 1)]
-          : getMiniSchema(value.component, maxDepth - 1);
-        break;
-
-      case `relation`:
-        schema[key] = getFullSchema(
-          value.target,
-          key === 'localizations' && maxDepth > 2 ? 1 : maxDepth - 1
-        );
-        break;
-
-      case `media`:
-        schema[key] = value.multiple ? `media_multiple` : `media_simple`;
-        break;
-
-      default:
-        schema[key] = value.type;
-        break;
-    }
-  }
-  return schema;
 };
 
 /**
@@ -63,15 +24,6 @@ const getFullSchema = (modelUid, maxDepth = 20) => {
   }
   const customFields = strapi.plugin(pluginId).config('customFields');
   const consoleLog = strapi.plugin(pluginId).config('consoleLog');
-  if (
-    modelUid.startsWith(`admin::`) ||
-    modelUid.startsWith(`strapi::`) ||
-    modelUid.startsWith(`plugin::users-permissions`) ||
-    modelUid.startsWith(`plugin::i18n`)
-  ) {
-    consoleLog && strapi.log.log(`Won't do ${modelUid}`);
-    return null;
-  }
 
   consoleLog && strapi.log.log(`Enter in > getFullSchema`);
   consoleLog && strapi.log.log(`maxDepth = ${maxDepth}`);
