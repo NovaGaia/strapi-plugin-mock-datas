@@ -1,9 +1,7 @@
 <center>
-<div style="width:110px">
 
-![Logo NovaGaïa](docs/%20enso_100p100.svg)
+![Logo NovaGaïa](https://avatars.githubusercontent.com/u/84325618?s=200&v=4)
 
-</div>
 </center>
 
 # Strapi plugin Nova Mock Datas
