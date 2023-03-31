@@ -11,6 +11,12 @@ const getModelPopulationAttributes = (model) => {
   return model.attributes;
 };
 
+const createDataObject = (data, isMultiple = false) => {
+  return isMultiple
+    ? { data: [{ id: 1, attributes: { ...data } }] }
+    : { data: { id: 1, attributes: { ...data } } };
+};
+
 /**
  * Methode to generate schema
  * @param {String} modelUid Model name
@@ -71,10 +77,10 @@ const getFullSchema = (modelUid, maxDepth = 20, consoleLog = false, customFields
             // fix #1
             isEmpty(relationPopulate)
               ? null
-              : (schema[key] =
+              : (schema[key] = createDataObject(
+                  relationPopulate,
                   value.relation === 'oneToMany' || value.relation === 'manyToMany'
-                    ? [{ ...relationPopulate, id: 1 }]
-                    : { ...relationPopulate, id: 1 });
+                ));
             break;
           case 'dynamiczone':
             const dynamicZonePopulate = [];
