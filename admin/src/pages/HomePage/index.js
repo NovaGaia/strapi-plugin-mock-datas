@@ -158,7 +158,7 @@ const HomePage = () => {
           paddingTop={4}
           paddingLeft={4}
           shadow="tableShadow"
-          background="secondary200"
+          background="secondary100"
           paddingRight={4}
           paddingBottom={4}
           hasRadius
