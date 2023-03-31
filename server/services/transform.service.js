@@ -19,7 +19,7 @@ module.exports = ({ strapi }) => ({
       consoleLog && strapi.log.debug(`*************** APPLYING MOCK ***************`);
       // single
       if (_.has(ctx.body.data, 'attributes')) {
-        ctx.body.data = { id: 1, attributes: mockedObject };
+        ctx.body.data = { id: 1, attributes: { ...ctx.body.data.attributes, ...mockedObject } };
       }
 
       // collection
@@ -28,7 +28,9 @@ module.exports = ({ strapi }) => ({
         ctx.body.data.length &&
         _.has(_.head(ctx.body.data), 'attributes')
       ) {
-        ctx.body.data = [{ id: 1, attributes: mockedObject }];
+        ctx.body.data = [
+          { id: 1, attributes: { ...ctx.body.data[0].attributes, ...mockedObject } },
+        ];
       }
       consoleLog && strapi.log.info(`*************** END ${modelUid} ***************`);
       return null;
