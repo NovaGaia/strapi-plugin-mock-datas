@@ -87,14 +87,14 @@ const getFullSchema = (modelUid, maxDepth = 20, consoleLog = false, customFields
             let count = 1;
             value.components.forEach((item) => {
               const obj = getFullSchema(item, maxDepth - 1, consoleLog, customFields);
-              if (obj) {
+              if (obj !== null) {
                 obj[`__component`] = item;
                 obj[`id`] = count;
                 dynamicZonePopulate.push(obj);
                 count++;
               }
             });
-            isEmpty(dynamicZonePopulate) ? null : (schema[key] = dynamicZonePopulate);
+            dynamicZonePopulate.length === 0 ? null : (schema[key] = dynamicZonePopulate);
             break;
 
           default:
@@ -104,7 +104,7 @@ const getFullSchema = (modelUid, maxDepth = 20, consoleLog = false, customFields
       }
     }
   }
-  return isEmpty(schema) ? null : { ...schema, id: 1 };
+  return isEmpty(schema) || schema === null ? null : { ...schema, id: 1 };
 };
 
 /**
@@ -131,12 +131,18 @@ const getMockedObject = (schema, doing = null, maxDepth = 20, consoleLog = false
       if (typeof value === 'object') {
         // consoleLog && strapi.log.debug(`Mocking > isArray ${key}: ${Array.isArray(value)}`);
         if (Array.isArray(value)) {
+          let rt = null;
           const tmpArr = value.map((item) => {
-            return getMockedObject(item, key, maxDepth - 1, consoleLog);
+            const rtTemp = getMockedObject(item, key, maxDepth - 1, consoleLog);
+            if (rtTemp !== null) rt = 1;
+            return rtTemp;
           });
-          results[key] = tmpArr;
+          rt === null ? null : (results[key] = tmpArr);
         } else {
-          results[key] = getMockedObject(value, key, maxDepth - 1, consoleLog);
+          const rt = getMockedObject(value, key, maxDepth - 1, consoleLog);
+          rt === null
+            ? null
+            : (results[key] = getMockedObject(value, key, maxDepth - 1, consoleLog));
         }
       } else {
         switch (value) {
