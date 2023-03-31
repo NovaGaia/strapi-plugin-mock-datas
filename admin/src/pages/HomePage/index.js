@@ -153,6 +153,51 @@ const HomePage = () => {
       />
       <ContentLayout>
         <Box
+          marginTop={4}
+          marginBottom={4}
+          paddingTop={4}
+          paddingLeft={4}
+          shadow="tableShadow"
+          background="secondary200"
+          paddingRight={4}
+          paddingBottom={4}
+          hasRadius
+        >
+          <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
+            <Typography variant="alpha">WARNING:</Typography>
+          </Box>
+          <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
+            <Typography variant="omega">
+              This plugin, when activated, will not modify your data stored in Strapi, but will
+              replace thems in the API calls.
+            </Typography>
+          </Box>
+          <Box paddingLeft={4} paddingRight={4} marginTop={4} marginBottom={2}>
+            <Divider />
+          </Box>
+          <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
+            <Typography variant="omega">
+              It will automatically generate the necessary data to generate a complete schema for
+              your GraphQL frontend.
+            </Typography>
+          </Box>
+          <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
+            <Typography variant="omega" fontWeight="bold">
+              But the data will not be consistent (id, images, etc.) so your frontend will not be
+              able to use them further than the schema construction. After generating the schema,
+              disable the mock and resume your development.
+            </Typography>
+          </Box>
+          <Box paddingLeft={4} paddingRight={4} marginTop={4} marginBottom={2}>
+            <Divider />
+          </Box>
+          <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
+            <Typography variant="omega">Clean your front caches before and after.</Typography>
+          </Box>
+        </Box>
+        <Box
+          marginTop={4}
+          marginBottom={4}
           paddingTop={4}
           paddingLeft={4}
           shadow="tableShadow"
@@ -187,11 +232,9 @@ const HomePage = () => {
             onChange={handleNovaMockConfigStoreChange('mockEnabled')}
           />
         </Box>
-        {/* <Box padding={8}>
-          <Divider />
-        </Box> */}
         <Box
-          marginTop={8}
+          marginTop={4}
+          marginBottom={4}
           paddingTop={4}
           paddingLeft={4}
           shadow="tableShadow"
@@ -201,35 +244,34 @@ const HomePage = () => {
           hasRadius
         >
           <Box paddingTop={2} paddingLeft={4}>
-            <Typography variant="omega" fontWeight="semiBold">
-              You must set in the plugin configuration:
-            </Typography>
+            <Typography variant="epsilon">You must set in the plugin configuration:</Typography>
           </Box>
           <Box paddingTop={2} paddingLeft={4}>
-            <Typography variant="pi">
+            <Typography variant="omega">
               - Indicates the depth (child level) of the data to be mocked →{' '}
               <code>defaultDepth: 5</code> ;
             </Typography>
           </Box>
-          <Box paddingTop={2} paddingLeft={4}>
-            <Typography variant="pi">
+          <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
+            <Typography variant="omega">
               - The default type of mock for your Custom Fiedls →{' '}
               <code>customFields: {`{'plugin::name':'type'}`}</code> ;
             </Typography>
           </Box>
-          <Box paddingTop={2} paddingLeft={4}>
-            <Typography variant="pi">
-              - The list of plugins not to be replaced by mocked datas →{' '}
-              <code>customFields: {`['plugin::name']`}</code>.
+          <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
+            <Typography variant="omega">
+              - An object containing the apis to be mocked →{' '}
+              <code>apisToMock: {`{'api::yourct.yourct': true}`}</code>.
+            </Typography>
+            <Typography variant="omega">
+              <em>true, false, whatever.</em>
             </Typography>
           </Box>
-          <Box paddingTop={2} paddingLeft={4}>
-            <Typography variant="omega" fontWeight="semiBold">
-              Your actual plugin config:
-            </Typography>
+          <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
+            <Typography variant="epsilon">Your actual plugin config:</Typography>
           </Box>
-          <Box paddingTop={2} paddingLeft={4}>
-            <Typography variant="pi">
+          <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
+            <Typography variant="omega">
               <pre>{JSON.stringify(novaMockPluginConfig, undefined, 4)}</pre>
             </Typography>
           </Box>
