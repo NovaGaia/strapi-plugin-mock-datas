@@ -2,7 +2,7 @@
   <img style="width: 160px; height: auto;" src="https://avatars.githubusercontent.com/u/84325618?s=200&v=4" alt="Logo NovaGaïa" />
   <h1>Strapi plugin Nova Mock Datas</h1>
   <p>by <a href="https://novagaia.fr/" target="_blank">NovaGaïa</a>.</p>
-  <p><strong>This plugin aims to temporarily replace API responses with full mocks.</strong></p>
+  <p><strong>On demand, mock all responses from your Strapi APIs.</strong></p>
 
 </div>
 
@@ -100,7 +100,7 @@ module.exports = ({ env }) => ({
 
 In the Strapi admin, you have a screen to enable/disable the mock functionality.
 
-![NNova Datas Mocker Configuration](./docs/Capture-2023-03-29-013857.png)
+![Nova Datas Mocker Configuration](https://github.com/NovaGaia/strapi-plugin-mock-datas/blob/main/docs/Capture-2023-03-29-013857.png?raw=true)
 Open it in Plugin > Nova Datas Mocker
 
 In the screen you have only a Toogle allowing to activate/deactivate the mock of the API datas.

@@ -1,10 +1,10 @@
 {
   "name": "nova-datas-mocker",
   "version": "1.2.1",
-  "description": "This is the description of the plugin.",
+  "description": "On demand, mock all responses from your Strapi APIs.",
   "strapi": {
     "name": "nova-datas-mocker",
-    "description": "Autmaticaly and deepely mock all your datas.",
+    "description": "On demand, mock all responses from your Strapi APIs.",
     "kind": "plugin",
     "displayName": "Nova Datas Mocker"
   },
