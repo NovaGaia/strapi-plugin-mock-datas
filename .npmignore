@@ -1,4 +1,4 @@
 .nvmrc
 node_modules
 .release-it.json
-Docs
+yarn.lock
