@@ -5,11 +5,10 @@ const _ = require('lodash');
 module.exports = ({ strapi }) => ({
   transformResponse(ctx, datas) {
     const {
-      configStore: { mockEnabled },
       apisToMock: modelUid,
       settings: { defaultDepth, customFields, consoleLog },
     } = datas;
-    if (mockEnabled) {
+    if (datas.configStore && datas.configStore?.mockEnabled) {
       strapi.log.warn(`*************** ${modelUid} IS SENDING MOCKED DATAS /!\\ ***************`);
       consoleLog && strapi.log.info(`*************** START ${modelUid} ***************`);
       consoleLog && strapi.log.debug(`*************** GENERATING SCHEMA ***************`);
