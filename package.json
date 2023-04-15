@@ -48,7 +48,8 @@
     "@strapi/helper-plugin": "^4.6.0",
     "@strapi/icons": "^1.6.3",
     "@faker-js/faker": "^7.6.0",
-    "prop-types": "^15.7.2"
+    "prop-types": "^15.7.2",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "react": "^17.0.2",
