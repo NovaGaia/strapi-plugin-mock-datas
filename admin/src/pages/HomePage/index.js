@@ -285,6 +285,14 @@ const HomePage = () => {
               checked={novaMockConfigStore.addImageInRichtextEnabled}
               refs={addImageEnabledRef}
               onChange={handleNovaMockConfigStoreChange('addImageInRichtextEnabled')}
+              disabled={
+                !!!novaMockPluginConfig.imageNameToUse || novaMockPluginConfig.imageNameToUse === ''
+              }
+              hint={
+                !!!novaMockPluginConfig.imageNameToUse || novaMockPluginConfig.imageNameToUse === ''
+                  ? `Disabled because config imageNameToUse is not set.`
+                  : ``
+              }
             />
           </Stack>
         </Box>

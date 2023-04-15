@@ -62,18 +62,20 @@ module.exports = ({ env }) => ({
       consoleLog: false, // default false
       customFields: { 'plugin::permalinks.permalink': `string` }, // default {}
       apisToMock: { 'api::page.page': true, 'api::global.global': true }, // default {}
+      imageNameToUse: 'ExistingImageInMediaLibraryToUse.xxx', // default ''
     },
   },
   // ...
 });
 ```
 
-| Variable       | Description                                                                               | Type    | Default value |
-| -------------- | ----------------------------------------------------------------------------------------- | ------- | ------------- |
-| `defaultDepth` | Indicate the deep of the genration of Mocking datas                                       | Int     | 5             |
-| `consoleLog`   | Enabled or not the verbous log                                                            | Boolean | false         |
-| `customFields` | Object specifying which data type (Date, integer, Json, etc.) a CustomField should return | Object  | {}            |
-| `apisToMock`   | Object containing a list of plugins that should not be managed by this plugin             | Object  | {}            |
+| Variable         | Description                                                                               | Type    | Default value |
+| ---------------- | ----------------------------------------------------------------------------------------- | ------- | ------------- |
+| `defaultDepth`   | Indicate the deep of the genration of Mocking datas                                       | Int     | 5             |
+| `consoleLog`     | Enabled or not the verbous log                                                            | Boolean | false         |
+| `customFields`   | Object specifying which data type (Date, integer, Json, etc.) a CustomField should return | Object  | {}            |
+| `apisToMock`     | Object containing a list of plugins that should not be managed by this plugin             | Object  | {}            |
+| `imageNameToUse` | An exiting image in your Strapi Media Library (gatsby-source-strapi need it)              | String  | ''            |
 
 `customFields` must return one of those data types :
 

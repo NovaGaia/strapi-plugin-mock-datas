@@ -5,7 +5,7 @@ module.exports = ({ strapi }) => ({
   transformResponse(ctx, datas) {
     const {
       apisToMock: modelUid,
-      settings: { defaultDepth, customFields, consoleLog },
+      settings: { defaultDepth, customFields, consoleLog, imageNameToUse },
     } = datas;
     if (datas.configStore && datas.configStore.mockEnabled) {
       strapi.log.warn(`*************** ${modelUid} IS SENDING MOCKED DATAS /!\\ ***************`);
@@ -18,7 +18,8 @@ module.exports = ({ strapi }) => ({
         null,
         defaultDepth,
         consoleLog,
-        datas.configStore.addImageInRichtextEnabled
+        datas.configStore.addImageInRichtextEnabled,
+        imageNameToUse
       );
       consoleLog && strapi.log.debug(`*************** APPLYING MOCK ***************`);
       // single

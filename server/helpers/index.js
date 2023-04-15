@@ -119,7 +119,8 @@ const getMockedObject = (
   doing = null,
   maxDepth = 20,
   consoleLog = false,
-  addImageInRichtext = false
+  addImageInRichtext = false,
+  imageNameToUse = ''
 ) => {
   if (maxDepth <= 1) {
     return null;
@@ -139,13 +140,27 @@ const getMockedObject = (
         if (Array.isArray(value)) {
           let rt = null;
           const tmpArr = value.map((item) => {
-            const rtTemp = getMockedObject(item, key, maxDepth - 1, consoleLog, addImageInRichtext);
+            const rtTemp = getMockedObject(
+              item,
+              key,
+              maxDepth - 1,
+              consoleLog,
+              addImageInRichtext,
+              imageNameToUse
+            );
             if (rtTemp !== null) rt = 1;
             return rtTemp;
           });
           rt === null ? null : (results[key] = tmpArr);
         } else {
-          const rt = getMockedObject(value, key, maxDepth - 1, consoleLog, addImageInRichtext);
+          const rt = getMockedObject(
+            value,
+            key,
+            maxDepth - 1,
+            consoleLog,
+            addImageInRichtext,
+            imageNameToUse
+          );
           rt === null
             ? null
             : (results[key] = getMockedObject(
@@ -153,7 +168,8 @@ const getMockedObject = (
                 key,
                 maxDepth - 1,
                 consoleLog,
-                addImageInRichtext
+                addImageInRichtext,
+                imageNameToUse
               ));
         }
       } else {
@@ -170,7 +186,9 @@ const getMockedObject = (
             break;
 
           case `richtext`:
-            results[key] = addImageInRichtext ? fakeMarkdownWithImage : fakeMarkdown;
+            results[key] = addImageInRichtext
+              ? fakeMarkdownWithImage(imageNameToUse)
+              : fakeMarkdown;
             break;
 
           case `media_simple`:

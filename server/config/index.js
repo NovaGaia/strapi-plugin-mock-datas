@@ -6,6 +6,7 @@ module.exports = {
     apisToMock: {},
     customFields: [],
     consoleLog: false,
+    imageNameToUse: '',
   },
   validator: () => {},
 };
