@@ -114,7 +114,13 @@ const getFullSchema = (modelUid, maxDepth = 20, consoleLog = false, customFields
  * @param {*} maxDepth Deep of the fake data
  * @returns {}
  */
-const getMockedObject = (schema, doing = null, maxDepth = 20, consoleLog = false) => {
+const getMockedObject = (
+  schema,
+  doing = null,
+  maxDepth = 20,
+  consoleLog = false,
+  addImageInRichtext = false
+) => {
   if (maxDepth <= 1) {
     return null;
   }
@@ -158,7 +164,7 @@ const getMockedObject = (schema, doing = null, maxDepth = 20, consoleLog = false
             break;
 
           case `richtext`:
-            results[key] = fakeMarkdownWithImage;
+            results[key] = addImageInRichtext ? fakeMarkdownWithImage : fakeMarkdown;
             break;
 
           case `media_simple`:
