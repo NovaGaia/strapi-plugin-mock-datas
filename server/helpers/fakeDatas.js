@@ -1,8 +1,7 @@
 module.exports = {
   fakeMarkdown:
     'Bonjour, je suis **Renaud**, fondateur de [NovaGaïa](https://novagaia.fr).\n- Item 1\n- Item 2',
-  fakeMarkdownWithImage:
-    'Bonjour, je suis Renaud, fondateur de [NovaGaïa](https://novagaia.fr).\n![Event 2022](/uploads/fake_image.jpg)',
+  fakeMarkdownWithImage: `Bonjour, je suis Renaud, fondateur de [NovaGaïa](https://novagaia.fr).\n![Event 2022](https://source.unsplash.com/random/250x250/?city,night)`,
   fakeImage: {
     data: {
       id: 1,
