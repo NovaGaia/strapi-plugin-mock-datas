@@ -1,4 +1,3 @@
-const { pluginId } = require('../utils/pluginId');
 const { getFullSchema, getMockedObject } = require('../helpers');
 const _ = require('lodash');
 
@@ -8,13 +7,19 @@ module.exports = ({ strapi }) => ({
       apisToMock: modelUid,
       settings: { defaultDepth, customFields, consoleLog },
     } = datas;
-    if (datas.configStore && datas.configStore?.mockEnabled) {
+    if (datas.configStore && datas.configStore.mockEnabled) {
       strapi.log.warn(`*************** ${modelUid} IS SENDING MOCKED DATAS /!\\ ***************`);
       consoleLog && strapi.log.info(`*************** START ${modelUid} ***************`);
       consoleLog && strapi.log.debug(`*************** GENERATING SCHEMA ***************`);
       const schema = getFullSchema(modelUid, defaultDepth, consoleLog, customFields);
       consoleLog && strapi.log.debug(`*************** GENERATING MOCK ***************`);
-      const mockedObject = getMockedObject(schema, null, defaultDepth, consoleLog);
+      const mockedObject = getMockedObject(
+        schema,
+        null,
+        defaultDepth,
+        consoleLog,
+        datas.configStore.addImageInRichtextEnabled
+      );
       consoleLog && strapi.log.debug(`*************** APPLYING MOCK ***************`);
       // single
       if (_.has(ctx.body.data, 'attributes')) {

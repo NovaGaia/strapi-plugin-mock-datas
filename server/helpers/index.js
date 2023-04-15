@@ -1,6 +1,6 @@
 const { isEmpty } = require('lodash/fp');
 const { faker } = require('@faker-js/faker');
-const { fakeMarkdown, fakeImage } = require('./fakeDatas');
+const { fakeMarkdown, fakeImage, fakeMarkdownWithImage } = require('./fakeDatas');
 
 const getModelPopulationAttributes = (model) => {
   if (model.uid === 'plugin::upload.file') {
@@ -114,7 +114,13 @@ const getFullSchema = (modelUid, maxDepth = 20, consoleLog = false, customFields
  * @param {*} maxDepth Deep of the fake data
  * @returns {}
  */
-const getMockedObject = (schema, doing = null, maxDepth = 20, consoleLog = false) => {
+const getMockedObject = (
+  schema,
+  doing = null,
+  maxDepth = 20,
+  consoleLog = false,
+  addImageInRichtext = false
+) => {
   if (maxDepth <= 1) {
     return null;
   }
@@ -158,7 +164,7 @@ const getMockedObject = (schema, doing = null, maxDepth = 20, consoleLog = false
             break;
 
           case `richtext`:
-            results[key] = fakeMarkdown;
+            results[key] = addImageInRichtext ? fakeMarkdownWithImage : fakeMarkdown;
             break;
 
           case `media_simple`:

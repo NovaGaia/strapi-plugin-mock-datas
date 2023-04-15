@@ -29,6 +29,7 @@ module.exports = ({ strapi }) => ({
       const reqBody = ctx.request.body;
       const data = {
         mockEnabled: reqBody.mockEnabled,
+        addImageInRichtextEnabled: reqBody.addImageInRichtextEnabled,
       };
       const pluginStore = strapi.store({
         environment: strapi.config.environment,

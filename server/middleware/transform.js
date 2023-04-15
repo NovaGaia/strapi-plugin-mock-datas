@@ -4,7 +4,14 @@ const _ = require('lodash');
 const { getPluginService } = require('../utils/getPluginService');
 
 const transform = async (strapi, ctx, next, datas) => {
-  datas.configStore = await getPluginService('datasMockerServices').getConfigStore();
+  const tempConfigStore = await getPluginService('datasMockerServices').getConfigStore();
+
+  if (tempConfigStore) {
+    datas.configStore = tempConfigStore;
+  } else {
+    // add default value if settings has never been set.
+    datas.configStore = { mockEnabled: false, addImageInRichtextEnabled: false };
+  }
 
   await next();
 

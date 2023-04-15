@@ -5,7 +5,15 @@
  */
 
 import { BaseHeaderLayout, ContentLayout } from '@strapi/design-system/Layout';
-import { Box, Button, Divider, ToggleInput, Tooltip, Typography } from '@strapi/design-system';
+import {
+  Box,
+  Button,
+  Divider,
+  Stack,
+  ToggleInput,
+  Tooltip,
+  Typography,
+} from '@strapi/design-system';
 import { Check, Information } from '@strapi/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { auth, useNotification } from '@strapi/helper-plugin';
@@ -22,6 +30,7 @@ const HomePage = () => {
   const [loading, setLoading] = useState(false);
   const [hasChanged, setHasChanged] = useState(false);
   const mockEnabledRef = useRef('');
+  const addImageEnabledRef = useRef('');
 
   const instance = axios.create({
     baseURL: process.env.STRAPI_ADMIN_BACKEND_URL,
@@ -33,16 +42,33 @@ const HomePage = () => {
 
   const [novaMockConfigStore, setNovaMockConfigStore] = useState({
     mockEnabled: false,
+    addImageInRichtextEnabled: false,
+  });
+  const [actualNovaMockConfigStore, setActualNovaMockConfigStore] = useState({
+    mockEnabled: false,
+    addImageInRichtextEnabled: false,
   });
   const [novaMockPluginConfig, setNovaMockPluginConfig] = useState({});
 
   const setDataStore = (data) => {
     setNovaMockConfigStore(data);
+    setActualNovaMockConfigStore(data);
     // update the refs
     mockEnabledRef.current = data.mockEnabled;
+    addImageEnabledRef.current = data.addImageInRichtextEnabled;
   };
   const setDataPlugin = (data) => {
     setNovaMockPluginConfig(data);
+  };
+
+  const compareChange = (key, value) => {
+    for (const [_key, _value] of Object.entries(novaMockConfigStore)) {
+      if (key !== _key) {
+        if (actualNovaMockConfigStore[_key] !== novaMockConfigStore[_key]) return true;
+      }
+    }
+    if (actualNovaMockConfigStore[key] !== value) return true;
+    return false;
   };
 
   const handleNovaMockConfigStoreChange = (key) => (e) => {
@@ -53,8 +79,12 @@ const HomePage = () => {
     });
     switch (key) {
       case 'mockEnabled':
-        setHasChanged(!hasChanged);
+        setHasChanged(compareChange(key, e.target.checked));
         mockEnabledRef.current = e.target.checked;
+        break;
+      case 'addImageInRichtextEnabled':
+        setHasChanged(compareChange(key, e.target.checked));
+        addImageEnabledRef.current = e.target.checked;
         break;
       default:
         break;
@@ -101,6 +131,7 @@ const HomePage = () => {
   const handelSave = async () => {
     const config = {
       mockEnabled: mockEnabledRef.current,
+      addImageInRichtextEnabled: addImageEnabledRef.current,
     };
     setLoading(true);
 
@@ -206,31 +237,56 @@ const HomePage = () => {
           paddingBottom={4}
           hasRadius
         >
-          <ToggleInput
-            id="enable-auto-mock-datas"
-            name="enable-auto-mock-datas"
-            hint="Auto Mock Datas"
-            label="Enabled"
-            labelAction={
-              <Tooltip description="Toogle must be set to true to mock your datas">
-                <button
-                  aria-label="Information about the toogle"
-                  style={{
-                    border: 'none',
-                    padding: 0,
-                    background: 'transparent',
-                  }}
-                >
-                  <Information aria-hidden />
-                </button>
-              </Tooltip>
-            }
-            onLabel="True"
-            offLabel="False"
-            checked={novaMockConfigStore.mockEnabled}
-            refs={mockEnabledRef}
-            onChange={handleNovaMockConfigStoreChange('mockEnabled')}
-          />
+          <Stack spacing={4} padding={3}>
+            <ToggleInput
+              id="enable-auto-mock-datas"
+              name="enable-auto-mock-datas"
+              label="Auto Mock Datas"
+              labelAction={
+                <Tooltip description="Toogle must be set to true to mock your datas">
+                  <button
+                    aria-label="Information about the toogle"
+                    style={{
+                      border: 'none',
+                      padding: 0,
+                      background: 'transparent',
+                    }}
+                  >
+                    <Information aria-hidden />
+                  </button>
+                </Tooltip>
+              }
+              onLabel="True"
+              offLabel="False"
+              checked={novaMockConfigStore.mockEnabled}
+              refs={mockEnabledRef}
+              onChange={handleNovaMockConfigStoreChange('mockEnabled')}
+            />
+            <ToggleInput
+              id="enable-add-imagein-richtext"
+              name="enable-add-imagein-richtext"
+              label="Add image in Richtext"
+              labelAction={
+                <Tooltip description="Toogle must be set to true to add image in Richtext">
+                  <button
+                    aria-label="Information about the toogle"
+                    style={{
+                      border: 'none',
+                      padding: 0,
+                      background: 'transparent',
+                    }}
+                  >
+                    <Information aria-hidden />
+                  </button>
+                </Tooltip>
+              }
+              onLabel="True"
+              offLabel="False"
+              checked={novaMockConfigStore.addImageInRichtextEnabled}
+              refs={addImageEnabledRef}
+              onChange={handleNovaMockConfigStoreChange('addImageInRichtextEnabled')}
+            />
+          </Stack>
         </Box>
         <Box
           marginTop={4}
