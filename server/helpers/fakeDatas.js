@@ -1,7 +1,7 @@
 module.exports = {
   fakeMarkdown:
     'Bonjour, je suis **Renaud**, fondateur de [NovaGaïa](https://novagaia.fr).\n- Item 1\n- Item 2',
-  fakeMarkdownWithImage: `Bonjour, je suis Renaud, fondateur de [NovaGaïa](https://novagaia.fr).\n![Event 2022](https://source.unsplash.com/random/250x250/?city,night)`,
+  fakeMarkdownWithImage: `Bonjour, je suis Renaud, fondateur de [NovaGaïa](https://novagaia.fr).\n![Event 2022](https://github.com/NovaGaia/strapi-plugin-mock-datas/blob/main/assets/photo-1491542451321-54b31bd2d961.jpeg?raw=true)`,
   fakeImage: {
     data: {
       id: 1,
