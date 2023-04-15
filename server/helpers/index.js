@@ -139,16 +139,22 @@ const getMockedObject = (
         if (Array.isArray(value)) {
           let rt = null;
           const tmpArr = value.map((item) => {
-            const rtTemp = getMockedObject(item, key, maxDepth - 1, consoleLog);
+            const rtTemp = getMockedObject(item, key, maxDepth - 1, consoleLog, addImageInRichtext);
             if (rtTemp !== null) rt = 1;
             return rtTemp;
           });
           rt === null ? null : (results[key] = tmpArr);
         } else {
-          const rt = getMockedObject(value, key, maxDepth - 1, consoleLog);
+          const rt = getMockedObject(value, key, maxDepth - 1, consoleLog, addImageInRichtext);
           rt === null
             ? null
-            : (results[key] = getMockedObject(value, key, maxDepth - 1, consoleLog));
+            : (results[key] = getMockedObject(
+                value,
+                key,
+                maxDepth - 1,
+                consoleLog,
+                addImageInRichtext
+              ));
         }
       } else {
         switch (value) {
