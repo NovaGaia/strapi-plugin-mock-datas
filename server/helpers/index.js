@@ -1,6 +1,6 @@
 const { isEmpty } = require('lodash/fp');
 const { faker } = require('@faker-js/faker');
-const { fakeMarkdown, fakeImage } = require('./fakeDatas');
+const { fakeMarkdown, fakeImage, fakeMarkdownWithImage } = require('./fakeDatas');
 
 const getModelPopulationAttributes = (model) => {
   if (model.uid === 'plugin::upload.file') {
@@ -158,7 +158,7 @@ const getMockedObject = (schema, doing = null, maxDepth = 20, consoleLog = false
             break;
 
           case `richtext`:
-            results[key] = fakeMarkdown;
+            results[key] = fakeMarkdownWithImage;
             break;
 
           case `media_simple`:
