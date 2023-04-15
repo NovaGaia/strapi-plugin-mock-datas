@@ -1,8 +1,8 @@
 module.exports = {
   fakeMarkdown:
-    '{"time":1679820667782,"blocks":[{"id":"v_cAIxUduo","type":"paragraph","data":{"text":"Bonjour, je m\'appelle Renaud, je suis le fondateur de <b>NovaGaïa</b>."}},{"id":"2PkaUL63Vh","type":"paragraph","data":{"text":"Welcome&nbsp;👋"}}],"version":"2.23.2"}',
+    'Bonjour, je suis **Renaud**, fondateur de [NovaGaïa](https://novagaia.fr).\n- Item 1\n- Item 2',
   fakeMarkdownWithImage:
-    '{"time":1681540188022,"blocks":[{"id":"6Pa-ICJlMM","type":"paragraph","data":{"text":"Bonjour, je suis Renaud, le fondateur de <a href=\\"https://novagaia.fr\\">NovaGaïa</a>"}},{"id":"zeyQUzgxfD","type":"paragraph","data":{"text":"Welcome&nbsp;👋"}},{"id":"cBDphunCWZ","type":"image","data":{"file":{"url":"/uploads/main_BCG_7099addefe.jpg","mime":"image/jpeg","height":900,"width":1600,"size":387.73,"alt":"mainBCG.jpg","formats":{"thumbnail":{"name":"thumbnail_mainBCG.jpg","hash":"thumbnail_main_BC…,"hash":"medium_main_BCG_7099addefe","ext":".jpg","mime":"image/jpeg","path":null,"width":750,"height":422,"size":84.38,"url":"/uploads/medium_main_BCG_7099addefe.jpg"},"large":{"name":"large_mainBCG.jpg","hash":"large_main_BCG_7099addefe","ext":".jpg","mime":"image/jpeg","path":null,"width":1000,"height":563,"size":152.43,"url":"/uploads/large_main_BCG_7099addefe.jpg"}}},"caption":"My caption for a test image.","withBorder":false,"stretched":false,"withBackground":false}}],"version":"2.23.2"}',
+    'Bonjour, je suis Renaud, fondateur de [NovaGaïa](https://novagaia.fr).\n![Event 2022](/uploads/fake_image.jpg)',
   fakeImage: {
     data: {
       id: 1,
