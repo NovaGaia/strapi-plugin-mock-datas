@@ -2,3 +2,4 @@
 node_modules
 .release-it.json
 yarn.lock
+mocking-assets

@@ -113,3 +113,11 @@ In the screen you have only a Toogle allowing to activate/deactivate the mock of
 ---
 
 <a href="https://www.buymeacoffee.com/renaudheluin" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
+
+---
+
+# Mocking image used
+
+> The image is self hosted in this repository.
+
+Photo de <a href="https://unsplash.com/@anitaaustvika?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Anita Austvika</a> sur <a href="https://unsplash.com/fr/photos/ornoDnE8E4A?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
