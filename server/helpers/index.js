@@ -19,8 +19,10 @@ const createDataObject = (data, isMultiple = false) => {
 
 /**
  * Methode to generate schema
- * @param {String} modelUid Model name
- * @param {Int} maxDepth Deep of the schema
+ * @param String modelUid Model name.
+ * @param Int maxDepth Deep of the schema.
+ * @param Boolean `consoleLog` transmit if log is enabled.
+ * @param Object `customFields` transmit the customFields mapping configured in plugin configuration.
  * @returns {}
  */
 const getFullSchema = (modelUid, maxDepth = 20, consoleLog = false, customFields = {}) => {
@@ -56,11 +58,12 @@ const getFullSchema = (modelUid, maxDepth = 20, consoleLog = false, customFields
               consoleLog,
               customFields
             );
+            // FIX: #7
             isEmpty(componentPopulate)
               ? null
               : (schema[key] = value.repeatable
-                  ? [{ ...componentPopulate, id: 1 }]
-                  : componentPopulate);
+                  ? [{ ...componentPopulate, id: 1, strapi_component: `fake__${key}` }]
+                  : { ...componentPopulate, strapi_component: `fake__${key}` });
             break;
           case 'media':
             isEmpty(value)
@@ -109,9 +112,12 @@ const getFullSchema = (modelUid, maxDepth = 20, consoleLog = false, customFields
 
 /**
  * Methode to generate fake data
- * @param {Object} schema The full schema
- * @param {*} doing This method is recursive, so to know if it is recursive or not
- * @param {*} maxDepth Deep of the fake data
+ * @param Object `schema` The full schema.
+ * @param String `doing` This method is recursive, so to know if it is recursive or not.
+ * @param Int `maxDepth` Deep of the fake data.
+ * @param Boolean `consoleLog` transmit if log is enabled.
+ * @param Boolean `addImageInRichtext` transmit if addImageInRichtext is enabled.
+ * @param String `imageNameToUse` name of the image to add in Markdown.
  * @returns {}
  */
 const getMockedObject = (
@@ -174,15 +180,10 @@ const getMockedObject = (
         }
       } else {
         switch (value) {
-          case `__component`:
-            results[key] = value;
-            // fix #7
-            results[key]['strapi_component'] = `fake__${key}`;
-            break;
-
           case `string`:
             results[key] = faker.lorem.words(3);
             break;
+
           case `text`:
             results[key] = faker.lorem.paragraphs(1);
             break;
@@ -257,7 +258,8 @@ const getMockedObject = (
             break;
 
           default:
-            if (key === `__component` || key === `id`) {
+            // FIX: #7
+            if (key === `__component` || key === `id` || key === `strapi_component`) {
               results[key] = value;
             } else {
               strapi.log.warn(`In ${key} > ${value} must be mocked!`);
