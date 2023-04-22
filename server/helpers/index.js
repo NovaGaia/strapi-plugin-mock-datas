@@ -176,6 +176,8 @@ const getMockedObject = (
         switch (value) {
           case `__component`:
             results[key] = value;
+            // fix #7
+            results[key]['strapi_component'] = `fake__${key}`;
             break;
 
           case `string`:
