@@ -27,6 +27,7 @@ I was inspirad by this other plugin `strapi-plugin-transformer`, so I want to th
 > **Warning**
 >
 > - **THIS PLUGIN IS AUTOMATICALLY DEACTIVATED IN PRODUCTION.**
+> - **In order for the plugin to return mocked data, at least 1 line must be created in base for each API. Enter only your required fields.**
 > - I decided, for collection, to sent only one response in an Array. More is not needed.
 > - Your modifications in controllers are added to Mocked response without _inteligence_. It may breaks, fix my code and open a PR or [open an issue](https://github.com/NovaGaia/strapi-plugin-mock-datas/issues) and I'll try to fix.
 
