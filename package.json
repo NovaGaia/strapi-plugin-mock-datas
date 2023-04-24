@@ -6,7 +6,7 @@
     "name": "nova-datas-mocker",
     "description": "On demand, mock all responses from your Strapi APIs.",
     "kind": "plugin",
-    "displayName": "Nova Datas Mocker"
+    "displayName": "Nova APIs Mocker"
   },
   "private": false,
   "keywords": [

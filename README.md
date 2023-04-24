@@ -1,6 +1,6 @@
 <div align="center">
   <img style="width: 160px; height: auto;" src="./docs/logo-novagaia@3x.png" alt="Logo NovaGaïa" />
-  <h1>Strapi plugin Nova Mock Datas</h1>
+  <h1>Nova APIs Mocker</h1>
   <p>by <a href="https://novagaia.fr/" target="_blank">NovaGaïa</a>.</p>
   <p><strong>On demand, mock all responses from your Strapi APIs.</strong></p>
 <p><a href="https://github.com/NovaGaia/strapi-plugin-mock-datas/blob/main/CHANGELOG.md">CHANGELOG</a></p>
