@@ -8,6 +8,11 @@ module.exports = ({ strapi }) => ({
     ctx.send(config);
   },
 
+  async isMockEnabled(ctx) {
+    const config = await strapi.plugin(pluginId).service('datasMockerServices').isMockEnabled();
+    ctx.send(config);
+  },
+
   async getConfigStore(ctx) {
     const config = await strapi.plugin(pluginId).service('datasMockerServices').getConfigStore();
     ctx.send(config);

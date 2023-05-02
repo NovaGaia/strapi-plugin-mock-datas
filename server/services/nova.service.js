@@ -6,6 +6,22 @@ module.exports = ({ strapi }) => ({
   getConfigPlugin() {
     return strapi.config.get(`plugin.${pluginId}`);
   },
+  isMockEnabled() {
+    try {
+      const pluginStore = strapi.store({
+        environment: strapi.config.environment,
+        type: 'plugin',
+        name: pluginId,
+      });
+      return pluginStore.get({ key: 'novaMockConfig' });
+    } catch (error) {
+      strapi.log.error(error.message);
+      return {
+        error:
+          'An error occurred while fetching Nova Datas Mocker config. Please try after some time',
+      };
+    }
+  },
   getConfigStore() {
     try {
       const pluginStore = strapi.store({

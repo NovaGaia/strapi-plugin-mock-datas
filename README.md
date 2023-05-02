@@ -111,6 +111,44 @@ In the screen you have only a Toogle allowing to activate/deactivate the mock of
 > **Note**
 > As you modify the data returned by the API and the Strapi Admin uses these same APIs to display and modify the data, as long as the plugin is activated, you will have errors when displaying the Collection Types and the Single Types.
 
+### III. Read if the plugin status with API
+
+> **Note**: On those routes, no credentials are required.
+
+#### a. Get if the plugin is enabled with API
+
+You can call and get plugin status with this route `/nova-datas-mocker/isMockEnabled`.
+
+The returned object is:
+
+```json
+{
+  "mockEnabled": false||true,
+  "addImageInRichtextEnabled": false||true
+}
+```
+
+#### a. Read if the plugin is configured with API
+
+You can call and get plugin status with this route `/nova-datas-mocker/configPlugin`.
+
+The returned object is:
+
+```json
+{
+  "defaultDepth": 6,
+  "consoleLog": true,
+  "customFields": {
+    "plugin::permalinks.permalink": "string"
+  },
+  "apisToMock": {
+    "api::page.page": true,
+    "api::global.global": true
+  },
+  "imageNameToUse": "main_BCG_7099addefe.jpg"
+}
+```
+
 ---
 
 <a href="https://www.buymeacoffee.com/renaudheluin" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>

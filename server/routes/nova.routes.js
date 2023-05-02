@@ -8,6 +8,15 @@ module.exports = {
       handler: 'novaController.getConfigPlugin',
       config: {
         policies: [],
+        auth: false,
+      },
+    },
+    {
+      method: 'GET',
+      path: '/isMockEnabled',
+      handler: 'novaController.isMockEnabled',
+      config: {
+        auth: false,
       },
     },
     {
