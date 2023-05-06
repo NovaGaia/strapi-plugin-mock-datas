@@ -412,15 +412,6 @@ const HomePage = () => {
             </Typography>
           </Box>
           <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
-            <Typography variant="omega">
-              - An object containing the apis to be mocked →{' '}
-              <code>apisToMock: {`{'api::yourct.yourct': true}`}</code>.
-            </Typography>
-            <Typography variant="omega">
-              <em>true, false, whatever.</em>
-            </Typography>
-          </Box>
-          <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
             <Typography variant="epsilon">Your actual plugin config:</Typography>
           </Box>
           <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
@@ -433,11 +424,11 @@ const HomePage = () => {
               <pre>{JSON.stringify(strapiAPIsList, undefined, 4)}</pre>
             </Typography>
           </Box> */}
-          <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
+          {/* <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
             <Typography variant="omega">
               <pre>{JSON.stringify(actualNovaMockConfigStore, undefined, 4)}</pre>
             </Typography>
-          </Box>
+          </Box> */}
         </Box>
       </ContentLayout>
     </>

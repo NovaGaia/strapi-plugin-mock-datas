@@ -121,7 +121,7 @@ module.exports = ({ env }) => ({
 
 In the Strapi admin, you have a screen to enable/disable the mock functionality. You can olso add image to all mocked richtext.
 
-![Nova Datas Mocker Configuration](https://github.com/NovaGaia/strapi-plugin-mock-datas/blob/main/docs/Capture-2023-04-15-102849.png?raw=true)
+![Nova Datas Mocker Configuration](https://github.com/NovaGaia/strapi-plugin-mock-datas/blob/main/docs/SCR-20230506-lna.png?raw=true)
 Open it in Plugin > Nova APIs Mocker
 
 In the screen you have only a Toogle allowing to activate/deactivate the mock of the API datas and an other to add an image in all Markdown fields.
