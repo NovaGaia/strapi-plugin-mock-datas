@@ -25,6 +25,7 @@ module.exports = ({ strapi }) => ({
       consoleLog && strapi.log.debug(`*************** APPLYING MOCK ***************`);
       const model = strapi.getModel(modelUid);
       if (model.kind === `collectionType`) {
+        // collectionType
         if (
           _.isArray(ctx.body.data) &&
           ctx.body.data.length &&
@@ -40,6 +41,7 @@ module.exports = ({ strapi }) => ({
           ctx.body.data = [{ id: 1, attributes: { ...mockedObject } }];
         }
       } else {
+        // singleType
         if (_.has(ctx.body.data, 'attributes')) {
           ctx.body.data = { id: 1, attributes: { ...ctx.body.data.attributes, ...mockedObject } };
         } else {
