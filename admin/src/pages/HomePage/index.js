@@ -94,7 +94,7 @@ const HomePage = () => {
   };
   useEffect(() => {
     compareMockConfigStore();
-  }, [novaMockConfigStore]);
+  }, [novaMockConfigStore, actualNovaMockConfigStore]);
 
   useEffect(() => {
     setLoading(true);
