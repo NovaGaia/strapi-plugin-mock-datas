@@ -25,10 +25,11 @@ module.exports = ({ strapi }) => {
     }
 
     // get APIs to mock
-    const apisToMock = _.get(settings, ['apisToMock', uid], false);
-    if (!apisToMock && _.isBoolean(apisToMock)) {
-      continue;
-    }
+    // const apisToMock = _.get(settings, ['apisToMock', uid], false);
+    // console.log(`uid`, uid, _.isBoolean(apisToMock));
+    // if (!apisToMock && _.isBoolean(apisToMock)) {
+    //   continue;
+    // }
 
     const apiRoutes = _.get(apis, [ct, 'routes', ct, 'routes'], []);
     for (let i = 0; i < apiRoutes.length; i++) {

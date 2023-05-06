@@ -18,6 +18,11 @@ module.exports = ({ strapi }) => ({
     ctx.send(config);
   },
 
+  async getAllStrapiAPIs(ctx) {
+    const config = await strapi.plugin(pluginId).service('datasMockerServices').getAllStrapiAPIs();
+    ctx.send(config);
+  },
+
   async updateConfigStore(ctx) {
     const config = await strapi
       .plugin(pluginId)

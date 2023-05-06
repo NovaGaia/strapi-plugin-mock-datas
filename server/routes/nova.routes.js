@@ -16,7 +16,16 @@ module.exports = {
       path: '/isMockEnabled',
       handler: 'novaController.isMockEnabled',
       config: {
+        policies: [],
         auth: false,
+      },
+    },
+    {
+      method: 'GET',
+      path: '/getAllStrapiAPIs',
+      handler: 'novaController.getAllStrapiAPIs',
+      config: {
+        policies: [],
       },
     },
     {

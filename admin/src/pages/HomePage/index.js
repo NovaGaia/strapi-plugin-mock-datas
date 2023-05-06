@@ -9,6 +9,8 @@ import {
   Box,
   Button,
   Divider,
+  Grid,
+  GridItem,
   Stack,
   ToggleInput,
   Tooltip,
@@ -19,6 +21,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { auth, useNotification } from '@strapi/helper-plugin';
 
 import { Helmet } from 'react-helmet';
+import _ from 'lodash';
 import axios from 'axios';
 import pluginId from '../../utils/pluginId';
 import pluginPkg from '../../../../package.json';
@@ -49,6 +52,7 @@ const HomePage = () => {
     addImageInRichtextEnabled: false,
   });
   const [novaMockPluginConfig, setNovaMockPluginConfig] = useState({});
+  const [strapiAPIsList, setStrapiAPIsList] = useState([]);
 
   const setDataStore = (data) => {
     setNovaMockConfigStore(data);
@@ -61,14 +65,14 @@ const HomePage = () => {
     setNovaMockPluginConfig(data);
   };
 
-  const compareChange = (key, value) => {
-    for (const [_key, _value] of Object.entries(novaMockConfigStore)) {
-      if (key !== _key) {
-        if (actualNovaMockConfigStore[_key] !== novaMockConfigStore[_key]) return true;
+  const compareMockConfigStore = (local = novaMockConfigStore) => {
+    for (const [_key, _value] of Object.entries(local)) {
+      if (!_.has(actualNovaMockConfigStore, _key)) {
+        setHasChanged(true);
       }
+      if (actualNovaMockConfigStore[_key] !== local[_key]) return setHasChanged(true);
     }
-    if (actualNovaMockConfigStore[key] !== value) return true;
-    return false;
+    return setHasChanged(false);
   };
 
   const handleNovaMockConfigStoreChange = (key) => (e) => {
@@ -79,20 +83,37 @@ const HomePage = () => {
     });
     switch (key) {
       case 'mockEnabled':
-        setHasChanged(compareChange(key, e.target.checked));
         mockEnabledRef.current = e.target.checked;
         break;
       case 'addImageInRichtextEnabled':
-        setHasChanged(compareChange(key, e.target.checked));
         addImageEnabledRef.current = e.target.checked;
         break;
       default:
         break;
     }
   };
+  useEffect(() => {
+    compareMockConfigStore();
+  }, [novaMockConfigStore]);
 
   useEffect(() => {
     setLoading(true);
+    const fetchAllStrapiAPIs = async () => {
+      try {
+        const { data } = await instance.get(`/${pluginId}/getAllStrapiAPIs`);
+        setStrapiAPIsList(data);
+      } catch (error) {
+        console.log(error);
+        toggleNotification({
+          type: 'warning',
+          message: {
+            id: 'nova-datas-mocker-all-apis-fetch-error',
+            defaultMessage: 'Error while fetching the Strapi APIs list',
+          },
+        });
+      }
+    };
+    fetchAllStrapiAPIs();
     const fetchNovaMockerConfigStore = async () => {
       try {
         const { data } = await instance.get(`/${pluginId}/configStore`);
@@ -129,10 +150,6 @@ const HomePage = () => {
   }, []);
 
   const handelSave = async () => {
-    const config = {
-      mockEnabled: mockEnabledRef.current,
-      addImageInRichtextEnabled: addImageEnabledRef.current,
-    };
     setLoading(true);
 
     try {
@@ -163,6 +180,54 @@ const HomePage = () => {
         },
       });
     }
+  };
+
+  const SwitchRow = ({ item }) => {
+    const toggleRef = useRef('');
+    const [checked, setChecked] = useState(false);
+    useEffect(() => {
+      setChecked(
+        _.has(novaMockConfigStore, item.apiName) ? novaMockConfigStore[item.apiName] : false
+      );
+    }, [actualNovaMockConfigStore]);
+
+    const onClick = (key) => (e) => {
+      // update the refs
+      // Check if unchecked and valus has not already been saved
+      if (!e.target.checked && !_.has(actualNovaMockConfigStore, key)) {
+        console.log(`must delete!`);
+        const temp = novaMockConfigStore;
+        _.unset(temp, key);
+        console.log(temp);
+        setNovaMockConfigStore(temp);
+        compareMockConfigStore(temp);
+      } else {
+        setNovaMockConfigStore({ ...novaMockConfigStore, [key]: e.target.checked });
+        compareMockConfigStore();
+      }
+      setChecked(e.target.checked);
+    };
+    return (
+      <>
+        <GridItem padding={1} col={2} s={12}>
+          <ToggleInput
+            id={`switch-${item.prettyName}`}
+            name={`switch-${item.prettyName}`}
+            // label={`Activate ${item.prettyName}`}
+            onLabel="True"
+            offLabel="False"
+            checked={checked}
+            refs={toggleRef}
+            onChange={onClick(item.apiName)}
+          />
+        </GridItem>
+        <GridItem col={10} s={12} padding={5}>
+          <Typography>
+            {item.prettyName} → {item.apiName}
+          </Typography>
+        </GridItem>
+      </>
+    );
   };
   return (
     <>
@@ -195,13 +260,13 @@ const HomePage = () => {
           hasRadius
         >
           <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
-            <Typography variant="alpha">WARNING:</Typography>
-          </Box>
-          <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
             <Typography variant="omega">
               This plugin, when activated, will not modify your data stored in Strapi, but will
               replace thems in the API calls.
             </Typography>
+          </Box>
+          <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
+            <Typography variant="alpha">WARNING:</Typography>
           </Box>
           <Box paddingLeft={4} paddingRight={4} marginTop={4} marginBottom={2}>
             <Divider />
@@ -209,7 +274,15 @@ const HomePage = () => {
           <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
             <Typography variant="omega">
               It will automatically generate the necessary data to generate a complete schema for
-              your GraphQL frontend.
+              your GraphQL frontend, if you added explicitly your API in the plugin configuration.
+            </Typography>
+          </Box>
+          <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
+            <Typography variant="omega" fontWeight="bold">
+              IMPORTANT: The plugin could work without any data in your collections and single, but
+              if you have customized some APIs (in controllers for example), they will be missing
+              (default operation of Strapi). They will only be available if you have at least 1
+              entry in your collections or single saved.
             </Typography>
           </Box>
           <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
@@ -219,11 +292,16 @@ const HomePage = () => {
               disable the mock and resume your development.
             </Typography>
           </Box>
+          <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
+            <Typography variant="omega" fontWeight="bold">
+              Even if you don't have debugging enabled, check the plugin logs regularly.
+            </Typography>
+          </Box>
           <Box paddingLeft={4} paddingRight={4} marginTop={4} marginBottom={2}>
             <Divider />
           </Box>
           <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
-            <Typography variant="omega">Clean your front caches before and after.</Typography>
+            <Typography variant="omega">Tips: Clean your front caches before and after.</Typography>
           </Box>
         </Box>
         <Box
@@ -294,6 +372,17 @@ const HomePage = () => {
                   : ``
               }
             />
+            <Box paddingTop={2} paddingLeft={0}>
+              <Typography variant="omega" fontWeight="bold">
+                APIs to mock:
+              </Typography>
+            </Box>
+            <Grid gap={5}>
+              {strapiAPIsList &&
+                strapiAPIsList.map((item) => {
+                  return <SwitchRow item={item} key={item.apiName} />;
+                })}
+            </Grid>
           </Stack>
         </Box>
         <Box
@@ -337,6 +426,16 @@ const HomePage = () => {
           <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
             <Typography variant="omega">
               <pre>{JSON.stringify(novaMockPluginConfig, undefined, 4)}</pre>
+            </Typography>
+          </Box>
+          {/* <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
+            <Typography variant="omega">
+              <pre>{JSON.stringify(strapiAPIsList, undefined, 4)}</pre>
+            </Typography>
+          </Box> */}
+          <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
+            <Typography variant="omega">
+              <pre>{JSON.stringify(actualNovaMockConfigStore, undefined, 4)}</pre>
             </Typography>
           </Box>
         </Box>
