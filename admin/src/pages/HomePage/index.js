@@ -9,14 +9,16 @@ import {
   Box,
   Button,
   Divider,
+  Flex,
   Grid,
   GridItem,
+  Icon,
   Stack,
   ToggleInput,
   Tooltip,
   Typography,
 } from '@strapi/design-system';
-import { Check, Information } from '@strapi/icons';
+import { Check, ExclamationMarkCircle, Information } from '@strapi/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { auth, useNotification } from '@strapi/helper-plugin';
 
@@ -183,12 +185,20 @@ const HomePage = () => {
   };
 
   const SwitchRow = ({ item }) => {
+    const {
+      options: _options,
+      uid,
+      prettyName,
+      description,
+      nbEntitySaved,
+      nbEntityPublished,
+      mustWarn,
+    } = item;
     const toggleRef = useRef('');
     const [checked, setChecked] = useState(false);
+    const options = _.keys(_options);
     useEffect(() => {
-      setChecked(
-        _.has(novaMockConfigStore, item.apiName) ? novaMockConfigStore[item.apiName] : false
-      );
+      setChecked(_.has(novaMockConfigStore, uid) ? novaMockConfigStore[uid] : false);
     }, [actualNovaMockConfigStore]);
 
     const onClick = (key) => (e) => {
@@ -207,24 +217,66 @@ const HomePage = () => {
       }
       setChecked(e.target.checked);
     };
+
+    const Options = () => {
+      return options.map((option) => {
+        const key = `${prettyName}-${option}`;
+        return (
+          <Box key={key}>
+            <Typography fontWeight="bold">{option}: </Typography>
+            <Typography as={`code`}>{`${_options[option]}`}</Typography>
+          </Box>
+        );
+      });
+      return <></>;
+    };
     return (
       <>
-        <GridItem padding={1} col={2} s={12}>
+        <GridItem padding={0} col={3} s={12}>
           <ToggleInput
-            id={`switch-${item.prettyName}`}
-            name={`switch-${item.prettyName}`}
-            // label={`Activate ${item.prettyName}`}
+            id={`switch-${prettyName}`}
+            name={`switch-${prettyName}`}
+            // label={`Activate ${prettyName}`}
             onLabel="True"
             offLabel="False"
             checked={checked}
             refs={toggleRef}
-            onChange={onClick(item.apiName)}
+            onChange={onClick(uid)}
           />
         </GridItem>
-        <GridItem col={10} s={12} padding={5}>
-          <Typography>
-            {item.prettyName} → {item.apiName}
-          </Typography>
+        <GridItem col={5} s={12} padding={0}>
+          <Flex direction={`column`} justifyContent={`center`} alignItems={`flex-start`}>
+            <Flex gap={1}>
+              <Typography fontWeight="bold">
+                {prettyName} → {uid}{' '}
+              </Typography>
+              {mustWarn && (
+                <Tooltip
+                  description={`You have no saved/published content. It could miss some datas from \`controllers\``}
+                >
+                  <Icon
+                    width={`${12 / 16}rem`}
+                    height={`${12 / 16}rem`}
+                    color="danger500"
+                    as={ExclamationMarkCircle}
+                  />
+                </Tooltip>
+              )}
+            </Flex>
+            <Box>
+              <Typography variant="pi">{`Item(s) saved: ${nbEntitySaved} / published: ${nbEntityPublished}`}</Typography>
+            </Box>
+            {description && (
+              <Box>
+                <Typography variant="pi">{description}</Typography>
+              </Box>
+            )}
+          </Flex>
+        </GridItem>
+        <GridItem col={4} s={12} padding={0}>
+          <Flex direction={`column`} justifyContent={`center`} alignItems={`flex-start`}>
+            <Options />
+          </Flex>
         </GridItem>
       </>
     );
@@ -373,14 +425,23 @@ const HomePage = () => {
               }
             />
             <Box paddingTop={2} paddingLeft={0}>
-              <Typography variant="omega" fontWeight="bold">
+              <Typography variant="delta" fontWeight="bold">
                 APIs to mock:
               </Typography>
             </Box>
-            <Grid gap={5}>
+            <Grid gap={5} style={{ alignItems: 'center' }}>
+              <GridItem padding={0} col={3} s={12}>
+                <Typography fontWeight={'bold'}>Mock Enabled</Typography>
+              </GridItem>
+              <GridItem col={5} s={12} padding={0}>
+                <Typography fontWeight={'bold'}>Informations</Typography>
+              </GridItem>
+              <GridItem col={4} s={12} padding={0}>
+                <Typography fontWeight={'bold'}>API Options</Typography>
+              </GridItem>
               {strapiAPIsList &&
                 strapiAPIsList.map((item) => {
-                  return <SwitchRow item={item} key={item.apiName} />;
+                  return <SwitchRow item={item} key={item.prettyName} />;
                 })}
             </Grid>
           </Stack>

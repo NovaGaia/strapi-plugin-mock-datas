@@ -36,7 +36,7 @@ module.exports = ({ strapi }) => ({
           ];
         } else {
           strapi.log.warn(
-            `YOUR COLLECTION \`${modelUid}\` HAS NO SAVED DATAS YET, IF YOU ADD SOME LOGIC IN CONTROLLER, THOSE ARE MISSING! FILL REQUIRED FIELDS AND SAVE TO REMOVE THIS WARN`
+            `YOUR COLLECTION \`${modelUid}\` HAS NO SAVED/PUBLISHED DATAS YET, IF YOU ADD SOME LOGIC IN CONTROLLER, THOSE ARE MISSING! FILL REQUIRED FIELDS AND SAVE TO REMOVE THIS WARN`
           );
           ctx.body.data = [{ id: 1, attributes: { ...mockedObject } }];
         }
@@ -46,7 +46,7 @@ module.exports = ({ strapi }) => ({
           ctx.body.data = { id: 1, attributes: { ...ctx.body.data.attributes, ...mockedObject } };
         } else {
           strapi.log.warn(
-            `YOUR SINGLE \`${modelUid}\` HAS NO SAVED DATAS YET, IF YOU ADD SOME LOGIC IN CONTROLLER, THOSE ARE MISSING! FILL REQUIRED FIELDS AND SAVE TO REMOVE THIS WARN`
+            `YOUR SINGLE \`${modelUid}\` HAS NO SAVED/PUBLISHED DATAS YET, IF YOU ADD SOME LOGIC IN CONTROLLER, THOSE ARE MISSING! FILL REQUIRED FIELDS AND SAVE TO REMOVE THIS WARN`
           );
           ctx.body.data = { id: 1, attributes: { ...mockedObject } };
         }
