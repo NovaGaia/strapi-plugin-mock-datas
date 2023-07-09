@@ -20,7 +20,12 @@ import {
 } from '@strapi/design-system';
 import { Check, ExclamationMarkCircle, Information } from '@strapi/icons';
 import React, { useEffect, useRef, useState } from 'react';
-import { auth, useNotification } from '@strapi/helper-plugin';
+import {
+  auth,
+  prefixFileUrlWithBackendUrl,
+  useLibrary,
+  useNotification,
+} from '@strapi/helper-plugin';
 
 import { Helmet } from 'react-helmet';
 import _ from 'lodash';
