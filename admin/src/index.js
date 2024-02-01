@@ -1,6 +1,7 @@
 import Initializer from './components/Initializer';
 import PluginIcon from './components/PluginIcon';
 import pluginId from './utils/pluginId';
+import pluginPermissions from "./permissions";
 import pluginPkg from '../../package.json';
 import { prefixPluginTranslations } from '@strapi/helper-plugin';
 
@@ -20,13 +21,7 @@ export default {
 
         return component;
       },
-      permissions: [
-        // Uncomment to set the permissions of the plugin here
-        // {
-        //   action: '', // the action name should be plugin::plugin-name.actionType
-        //   subject: null,
-        // },
-      ],
+      permissions: pluginPermissions.access,
     });
     app.registerPlugin({
       id: pluginId,
