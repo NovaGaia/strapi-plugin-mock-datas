@@ -1,6 +1,6 @@
 {
   "name": "nova-datas-mocker",
-  "version": "1.4.4",
+  "version": "1.4.5",
   "description": "On demand, mock all responses from your Strapi APIs.",
   "strapi": {
     "name": "nova-datas-mocker",
